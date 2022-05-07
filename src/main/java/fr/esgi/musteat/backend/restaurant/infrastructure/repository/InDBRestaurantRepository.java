@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class InDBRestaurantRestaurant implements RestaurantRepository {
+public class InDBRestaurantRepository implements RestaurantRepository {
 
     private final RestaurantDBRepository dbRepository;
 
-    public InDBRestaurantRestaurant(RestaurantDBRepository dbRepository) {
+    public InDBRestaurantRepository(RestaurantDBRepository dbRepository) {
         this.dbRepository = dbRepository;
     }
 
