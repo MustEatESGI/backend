@@ -47,5 +47,13 @@ public class Order extends Entity<Long> {
         return restaurant;
     }
 
-
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderDate=" + orderDate +
+                ", user=" + user +
+                ", restaurant=" + restaurant +
+                '}';
+    }
 }

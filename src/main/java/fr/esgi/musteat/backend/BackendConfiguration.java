@@ -5,6 +5,8 @@ import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.domain.LocationValidator;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.domain.MealValidator;
+import fr.esgi.musteat.backend.mealordered.domain.MealOrdered;
+import fr.esgi.musteat.backend.mealordered.domain.MealOrderedValidator;
 import fr.esgi.musteat.backend.order.domain.Order;
 import fr.esgi.musteat.backend.order.domain.OrderValidator;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
@@ -40,5 +42,10 @@ public class BackendConfiguration {
     @Bean
     public Validator<Order> getOrderValidator() {
         return new OrderValidator();
+    }
+
+    @Bean
+    public Validator<MealOrdered> getMealOrderedValidator() {
+        return new MealOrderedValidator();
     }
 }
