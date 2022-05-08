@@ -2,11 +2,14 @@ package fr.esgi.musteat.backend.restaurant.exposition.controller;
 
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
+import fr.esgi.musteat.backend.meal.domain.Meal;
+import fr.esgi.musteat.backend.meal.infrastructure.repository.InDBMealRepository;
+import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDTO;
+import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDetailsDTO;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,9 +24,12 @@ public class RestaurantController {
 
     private final LocationService locationService;
 
-    public RestaurantController(RestaurantService restaurantService, LocationService locationService) {
+    private final InDBMealRepository mealRepository;
+
+    public RestaurantController(RestaurantService restaurantService, LocationService locationService, InDBMealRepository mealRepository) {
         this.restaurantService = restaurantService;
         this.locationService = locationService;
+        this.mealRepository = mealRepository;
     }
 
     @GetMapping(value = "/restaurants")
@@ -32,8 +38,9 @@ public class RestaurantController {
     }
 
     @GetMapping(value = "/restaurant/{id}")
-    public RestaurantDTO getRestaurant(@PathVariable @Valid Long id) {
-        return RestaurantDTO.from(restaurantService.get(id));
+    public RestaurantDetailsDTO getRestaurant(@PathVariable @Valid Long id) {
+        List<Meal> meals = mealRepository.getAllByRestaurantId(id);
+        return RestaurantDetailsDTO.from(restaurantService.get(id), meals);
     }
 
     @PostMapping(value = "/restaurant")

@@ -1,6 +1,5 @@
 package fr.esgi.musteat.backend.user.infrastructure.repository;
 
-import fr.esgi.musteat.backend.location.infrastructure.database.LocationDBRepository;
 import fr.esgi.musteat.backend.user.domain.User;
 import fr.esgi.musteat.backend.user.domain.UserRepository;
 import fr.esgi.musteat.backend.user.infrastructure.database.UserDB;
