@@ -6,8 +6,6 @@ import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
 import fr.esgi.musteat.backend.mealordered.infrastructure.service.MealOrderedService;
 import fr.esgi.musteat.backend.order.domain.Order;
 import fr.esgi.musteat.backend.order.infrastructure.service.OrderService;
-import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
-import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,13 +18,10 @@ public class MealOrderedController {
 
     private final MealOrderedService mealOrderedService;
 
-    private final RestaurantService restaurantService;
-
     private final OrderService orderService;
 
-    public MealOrderedController(MealOrderedService mealOrderedService, RestaurantService restaurantService, OrderService orderService) {
+    public MealOrderedController(MealOrderedService mealOrderedService, OrderService orderService) {
         this.mealOrderedService = mealOrderedService;
-        this.restaurantService = restaurantService;
         this.orderService = orderService;
     }
 
@@ -43,8 +38,7 @@ public class MealOrderedController {
     @PostMapping(value = "/mealordered")
     public void createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         Order order = orderService.get(createMealOrderedDTO.orderId);
-        Restaurant restaurant = restaurantService.get(createMealOrderedDTO.restaurantId);
-        MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order, restaurant);
+        MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
         mealOrderedService.create(mealOrdered);
     }
 

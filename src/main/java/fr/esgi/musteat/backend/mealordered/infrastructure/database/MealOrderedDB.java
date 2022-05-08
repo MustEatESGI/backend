@@ -2,7 +2,6 @@ package fr.esgi.musteat.backend.mealordered.infrastructure.database;
 
 import fr.esgi.musteat.backend.mealordered.domain.MealOrdered;
 import fr.esgi.musteat.backend.order.infrastructure.database.OrderDB;
-import fr.esgi.musteat.backend.restaurant.infrastructure.database.RestaurantDB;
 
 import javax.persistence.*;
 
@@ -19,26 +18,22 @@ public class MealOrderedDB {
     @OneToOne
     private OrderDB order;
 
-    @OneToOne
-    private RestaurantDB restaurant;
-
     protected MealOrderedDB() {
     }
 
-    public MealOrderedDB(Long id, String name, Long price, OrderDB order, RestaurantDB restaurant) {
+    public MealOrderedDB(Long id, String name, Long price, OrderDB order) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.order = order;
-        this.restaurant = restaurant;
     }
 
     public static MealOrderedDB fromMealOrdered(MealOrdered mealOrdered) {
-        return new MealOrderedDB(mealOrdered.getId(), mealOrdered.getName(), mealOrdered.getPrice(), OrderDB.fromOrder(mealOrdered.getOrder()), RestaurantDB.fromRestaurant(mealOrdered.getRestaurant()));
+        return new MealOrderedDB(mealOrdered.getId(), mealOrdered.getName(), mealOrdered.getPrice(), OrderDB.fromOrder(mealOrdered.getOrder()));
     }
 
     public MealOrdered toMealOrdered() {
-        return new MealOrdered(this.id, this.name, this.price, this.order.toOrder(), this.restaurant.toRestaurant());
+        return new MealOrdered(this.id, this.name, this.price, this.order.toOrder());
     }
 
     public Long getId() {
@@ -55,9 +50,5 @@ public class MealOrderedDB {
 
     public OrderDB getOrder() {
         return order;
-    }
-
-    public RestaurantDB getRestaurant() {
-        return restaurant;
     }
 }

@@ -11,6 +11,4 @@ public class CreateMealOrderedDTO {
     public Long price;
     @NotNull
     public Long orderId;
-    @NotNull
-    public Long restaurantId;
 }
