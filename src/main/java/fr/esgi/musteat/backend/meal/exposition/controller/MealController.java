@@ -2,7 +2,7 @@ package fr.esgi.musteat.backend.meal.exposition.controller;
 
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.exposition.dto.CreateMealDTO;
-import fr.esgi.musteat.backend.meal.exposition.dto.MealDTO;
+import fr.esgi.musteat.backend.meal.exposition.dto.MealDetailsDTO;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
@@ -26,13 +26,13 @@ public class MealController {
     }
 
     @GetMapping(value = "/meals")
-    public List<MealDTO> getMeals() {
-        return mealService.getAll().stream().map(MealDTO::from).collect(Collectors.toList());
+    public List<MealDetailsDTO> getMeals() {
+        return mealService.getAll().stream().map(MealDetailsDTO::from).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/meal/{id}")
-    public MealDTO getMeal(@PathVariable @Valid Long id) {
-        return MealDTO.from(mealService.get(id));
+    public MealDetailsDTO getMeal(@PathVariable @Valid Long id) {
+        return MealDetailsDTO.from(mealService.get(id));
     }
 
     @PostMapping(value = "/meal")
