@@ -19,6 +19,7 @@ public class InDBMealRepository implements MealRepository {
         this.dbRepository = dbRepository;
     }
 
+    @Override
     public List<Meal> getAllByRestaurantId(Long restaurantId) {
         List<Meal> meals = new ArrayList<>();
         dbRepository.findAllByRestaurantId(restaurantId).forEach(mealDB -> meals.add(mealDB.toMeal()));

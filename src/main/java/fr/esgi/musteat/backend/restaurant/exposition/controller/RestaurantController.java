@@ -3,7 +3,6 @@ package fr.esgi.musteat.backend.restaurant.exposition.controller;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
-import fr.esgi.musteat.backend.meal.infrastructure.repository.InDBMealRepository;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
@@ -24,12 +23,12 @@ public class RestaurantController {
 
     private final LocationService locationService;
 
-    private final InDBMealRepository mealRepository;
+    private final MealService mealService;
 
-    public RestaurantController(RestaurantService restaurantService, LocationService locationService, InDBMealRepository mealRepository) {
+    public RestaurantController(RestaurantService restaurantService, LocationService locationService, MealService mealService) {
         this.restaurantService = restaurantService;
         this.locationService = locationService;
-        this.mealRepository = mealRepository;
+        this.mealService = mealService;
     }
 
     @GetMapping(value = "/restaurants")
@@ -39,7 +38,7 @@ public class RestaurantController {
 
     @GetMapping(value = "/restaurant/{id}")
     public RestaurantDetailsDTO getRestaurant(@PathVariable @Valid Long id) {
-        List<Meal> meals = mealRepository.getAllByRestaurantId(id);
+        List<Meal> meals = mealService.findByRestaurantId(id);
         return RestaurantDetailsDTO.from(restaurantService.get(id), meals);
     }
 
