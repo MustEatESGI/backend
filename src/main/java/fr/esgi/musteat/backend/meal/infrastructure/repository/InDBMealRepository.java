@@ -27,6 +27,13 @@ public class InDBMealRepository implements MealRepository {
     }
 
     @Override
+    public List<Meal> getAllByName(String name) {
+        List<Meal> meals = new ArrayList<>();
+        dbRepository.findAllByName(name).forEach(mealDB -> meals.add(mealDB.toMeal()));
+        return meals;
+    }
+
+    @Override
     public Optional<Meal> get(Long key) {
         Optional<MealDB> mealDB = dbRepository.findById(key);
         return mealDB.map(MealDB::toMeal);

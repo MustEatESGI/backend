@@ -15,10 +15,14 @@ public class MealService extends Service<MealRepository, Meal, Long> {
 
     public MealService(MealRepository repository, Validator<Meal> validator) {
         super(repository, validator, "meal");
-        this.mealRepository = (InDBMealRepository) repository;
+        this.mealRepository = repository;
     }
 
     public List<Meal> findByRestaurantId(Long restaurantId) {
         return mealRepository.getAllByRestaurantId(restaurantId);
+    }
+
+    public List<Meal> findByName(String name) {
+        return mealRepository.getAllByName(name);
     }
 }

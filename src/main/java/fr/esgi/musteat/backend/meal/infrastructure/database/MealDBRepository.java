@@ -10,4 +10,7 @@ public interface MealDBRepository extends CrudRepository<MealDB, Long> {
 
     @Query("SELECT m FROM MealDB m WHERE m.restaurant.id = :restaurantId")
     List<MealDB> findAllByRestaurantId(@Param("restaurantId") Long restaurantId);
+
+    @Query("SELECT m FROM MealDB m WHERE m.name = :name")
+    List<MealDB> findAllByName(@Param("name") String name);
 }
