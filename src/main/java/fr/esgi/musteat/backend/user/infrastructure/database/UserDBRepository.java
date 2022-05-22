@@ -1,6 +1,8 @@
 package fr.esgi.musteat.backend.user.infrastructure.database;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserDBRepository extends CrudRepository<UserDB, Long> {
+@Repository
+public interface UserDBRepository extends JpaRepository<UserDB, Long> {
 }

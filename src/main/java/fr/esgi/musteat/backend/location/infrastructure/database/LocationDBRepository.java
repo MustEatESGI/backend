@@ -1,6 +1,8 @@
 package fr.esgi.musteat.backend.location.infrastructure.database;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface LocationDBRepository extends CrudRepository<LocationDB, Long> {
+@Repository
+public interface LocationDBRepository extends JpaRepository<LocationDB, Long> {
 }
