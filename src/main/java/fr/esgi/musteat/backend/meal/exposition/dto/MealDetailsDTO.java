@@ -15,6 +15,9 @@ public class MealDetailsDTO {
     @NotNull
     public Long price;
     @NotNull
+    @NotBlank
+    public String picture;
+    @NotNull
     public Long restaurantId;
 
     public MealDetailsDTO(Long id, String name, Long price, Long restaurantId) {
@@ -22,6 +25,7 @@ public class MealDetailsDTO {
         this.name = name;
         this.price = price;
         this.restaurantId = restaurantId;
+        this.picture = "http://source.unsplash.com/random?" + name;
     }
 
     public static MealDetailsDTO from(Meal meal) {

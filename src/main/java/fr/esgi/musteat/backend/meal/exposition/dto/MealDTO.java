@@ -13,11 +13,15 @@ public class MealDTO {
     public String name;
     @NotNull
     public Long price;
+    @NotNull
+    @NotBlank
+    public String picture;
 
     public MealDTO(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.picture = "http://source.unsplash.com/random?" + name;
     }
 
     public static MealDTO from(Meal meal) {
