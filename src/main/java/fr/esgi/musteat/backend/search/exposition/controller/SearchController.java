@@ -1,7 +1,6 @@
 package fr.esgi.musteat.backend.search.exposition.controller;
 
 import fr.esgi.musteat.backend.meal.domain.Meal;
-import fr.esgi.musteat.backend.meal.exposition.dto.MealDTO;
 import fr.esgi.musteat.backend.meal.exposition.dto.MealDetailsDTO;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -4,7 +4,6 @@ import fr.esgi.musteat.backend.kernel.Service;
 import fr.esgi.musteat.backend.kernel.Validator;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.domain.MealRepository;
-import fr.esgi.musteat.backend.meal.infrastructure.repository.InDBMealRepository;
 
 import java.util.List;
 
