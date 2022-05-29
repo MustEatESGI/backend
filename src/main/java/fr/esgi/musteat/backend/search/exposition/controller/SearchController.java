@@ -3,6 +3,8 @@ package fr.esgi.musteat.backend.search.exposition.controller;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.exposition.dto.MealDetailsDTO;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +25,9 @@ public class SearchController {
     }
 
     @GetMapping("/search/{mealName}")
-    public List<MealDetailsDTO> searchByName(@PathVariable @Valid String mealName) {
+    public ResponseEntity<List<MealDetailsDTO>> searchByName(@PathVariable @Valid String mealName) {
         List<Meal> meals = mealService.findByName(mealName);
-        return meals.stream().map(MealDetailsDTO::from).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(meals.stream().map(MealDetailsDTO::from).collect(Collectors.toList()));
     }
 }

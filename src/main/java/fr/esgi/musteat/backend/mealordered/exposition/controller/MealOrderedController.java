@@ -6,11 +6,16 @@ import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
 import fr.esgi.musteat.backend.mealordered.infrastructure.service.MealOrderedService;
 import fr.esgi.musteat.backend.order.domain.Order;
 import fr.esgi.musteat.backend.order.infrastructure.service.OrderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -26,30 +31,35 @@ public class MealOrderedController {
     }
 
     @GetMapping(value = "/mealordered")
-    public List<MealOrderedDTO> getAllMealOrdered() {
-        return mealOrderedService.getAll().stream().map(MealOrderedDTO::from).collect(Collectors.toList());
+    public ResponseEntity<List<MealOrderedDTO>> getAllMealOrdered() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(mealOrderedService.getAll().stream().map(MealOrderedDTO::from).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/mealordered/{id}")
-    public MealOrderedDTO getMealOrdered(@PathVariable @Valid Long id) {
-        return MealOrderedDTO.from(mealOrderedService.get(id));
+    public ResponseEntity<MealOrderedDTO> getMealOrdered(@PathVariable @Valid Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(MealOrderedDTO.from(mealOrderedService.get(id)));
     }
 
     @PostMapping(value = "/mealordered")
-    public void createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         Order order = orderService.get(createMealOrderedDTO.orderId);
         MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
         mealOrderedService.create(mealOrdered);
+        return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
     }
 
     @PutMapping(value = "/mealordered/{id}")
-    public void updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         MealOrdered mealOrdered = mealOrderedService.get(id);
         mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO));
+        return ResponseEntity.ok(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri());
     }
 
     @DeleteMapping(value = "/mealordered/{id}")
-    public void deleteMealOrdered(@PathVariable @Valid Long id) {
+    public ResponseEntity deleteMealOrdered(@PathVariable @Valid Long id) {
         mealOrderedService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
