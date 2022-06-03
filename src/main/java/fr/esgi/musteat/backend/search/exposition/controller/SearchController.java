@@ -24,8 +24,8 @@ public class SearchController {
         this.mealService = mealService;
     }
 
-    @GetMapping("/search/{mealName}")
-    public ResponseEntity<List<MealDetailsDTO>> searchByName(@PathVariable @Valid String mealName) {
+    @GetMapping("/search/{mealName}/{sort}")
+    public ResponseEntity<List<MealDetailsDTO>> searchByName(@PathVariable @Valid String mealName, @PathVariable @Valid String sort) {
         List<Meal> meals = mealService.findByName(mealName);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(meals.stream().map(MealDetailsDTO::from).collect(Collectors.toList()));
