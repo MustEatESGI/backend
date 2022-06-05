@@ -1,6 +1,7 @@
 package fr.esgi.musteat.backend.restaurant.exposition.controller;
 
 import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
@@ -51,7 +52,8 @@ public class RestaurantController {
 
     @PostMapping(value = "/restaurant")
     public ResponseEntity createRestaurant(@RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
-        Location location = Location.from(createRestaurantDTO.location);
+        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+        Location location = Location.from(addressCodingDTO);
         locationService.create(location);
 
         Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
@@ -63,7 +65,8 @@ public class RestaurantController {
     public ResponseEntity updateRestaurant(@PathVariable @Valid Long id, @RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
         Restaurant restaurant = restaurantService.get(id);
 
-        locationService.update(Location.update(restaurant.getLocation().getId(), createRestaurantDTO.location));
+        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+        locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
         restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
         return ResponseEntity.ok(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri());
     }

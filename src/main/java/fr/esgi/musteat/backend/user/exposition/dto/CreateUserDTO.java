@@ -1,6 +1,6 @@
 package fr.esgi.musteat.backend.user.exposition.dto;
 
-import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,5 +14,5 @@ public class CreateUserDTO {
     @NotBlank
     public String password;
     @NotNull
-    public CreateLocationDTO location;
+    public AddressCodingDTO location;
 }

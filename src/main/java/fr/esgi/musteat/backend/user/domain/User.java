@@ -29,7 +29,7 @@ public class User extends Entity<Long> {
     }
 
     public static User update(User user, CreateUserDTO createUserDTO) {
-        return new User(user.getId(), createUserDTO.name, createUserDTO.password, Location.update(user.getLocation().getId(), createUserDTO.location));
+        return new User(user.getId(), createUserDTO.name, createUserDTO.password, Location.update(user.getLocation(), createUserDTO.location));
     }
 
     public String getName() {

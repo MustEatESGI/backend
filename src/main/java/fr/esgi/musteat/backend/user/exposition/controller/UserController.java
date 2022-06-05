@@ -56,7 +56,7 @@ public class UserController {
     public ResponseEntity updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
         User user = userService.get(id);
 
-        locationService.update(Location.update(user.getLocation().getId(), createUserDTO.location));
+        locationService.update(Location.update(user.getLocation(), createUserDTO.location));
         userService.update(User.update(user, createUserDTO));
         return ResponseEntity.ok(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri());
     }

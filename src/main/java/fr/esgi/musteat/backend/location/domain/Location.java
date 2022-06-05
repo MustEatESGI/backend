@@ -1,7 +1,7 @@
 package fr.esgi.musteat.backend.location.domain;
 
 import fr.esgi.musteat.backend.kernel.Entity;
-import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 
 public class Location extends Entity<Long> {
 
@@ -20,12 +20,12 @@ public class Location extends Entity<Long> {
         this.longitude = longitude;
     }
 
-    public static Location from(CreateLocationDTO createLocationDTO) {
+    public static Location from(AddressCodingDTO createLocationDTO) {
         return new Location(createLocationDTO.latitude, createLocationDTO.longitude);
     }
 
-    public static Location update(Long id, CreateLocationDTO createLocationDTO) {
-        return new Location(id, createLocationDTO.latitude, createLocationDTO.longitude);
+    public static Location update(Location location, AddressCodingDTO createLocationDTO) {
+        return new Location(location.getId(), createLocationDTO.latitude, createLocationDTO.longitude);
     }
 
     public Double getLatitude() {
