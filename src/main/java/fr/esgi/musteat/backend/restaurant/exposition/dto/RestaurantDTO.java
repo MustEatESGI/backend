@@ -5,6 +5,7 @@ import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class RestaurantDTO {
 
@@ -24,5 +25,18 @@ public class RestaurantDTO {
 
     public static RestaurantDTO from(Restaurant restaurant) {
         return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RestaurantDTO that = (RestaurantDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, location);
     }
 }
