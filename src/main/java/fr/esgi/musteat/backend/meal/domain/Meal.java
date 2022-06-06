@@ -28,8 +28,8 @@ public class Meal extends Entity<Long> {
         return new Meal(createMealDTO.name, createMealDTO.price, restaurant);
     }
 
-    public static Meal update(Meal meal, CreateMealDTO createMealDTO) {
-        return new Meal(meal.getId(), createMealDTO.name, createMealDTO.price, meal.getRestaurant());
+    public static Meal update(Meal meal, CreateMealDTO createMealDTO, Restaurant restaurant) {
+        return new Meal(meal.getId(), createMealDTO.name, createMealDTO.price, restaurant);
     }
 
     public String getName() {

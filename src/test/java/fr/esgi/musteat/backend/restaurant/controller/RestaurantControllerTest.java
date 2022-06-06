@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RestaurantControllerTest {
 
     @LocalServerPort
@@ -160,5 +161,20 @@ public class RestaurantControllerTest {
                 .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
 
         assertThat(restaurantDTO).isEqualTo(updateRestaurantDTO);
+    }
+
+    @Test
+    @Order(6)
+    void should_delete_restaurant() {
+        given()
+                .when()
+                .delete("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+                .then()
+                .statusCode(200);
+
+        when()
+                .get("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+                .then()
+                .statusCode(404);
     }
 }
