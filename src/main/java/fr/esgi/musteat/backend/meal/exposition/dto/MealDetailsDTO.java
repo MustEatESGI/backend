@@ -34,6 +34,17 @@ public class MealDetailsDTO {
     }
 
     @Override
+    public String toString() {
+        return "MealDetailsDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", picture='" + picture + '\'' +
+                ", restaurantId=" + restaurantId +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -31,6 +31,16 @@ public class OrderDTO {
     }
 
     @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "id=" + id +
+                ", orderDate=" + orderDate +
+                ", user=" + user +
+                ", restaurant=" + restaurant +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
