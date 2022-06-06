@@ -60,7 +60,7 @@ public class OrderController {
     public ResponseEntity updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO) {
         Order order = orderService.get(id);
         orderService.update(Order.update(order, createOrderDTO));
-        return ResponseEntity.ok(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri());
+        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/order/{id}")

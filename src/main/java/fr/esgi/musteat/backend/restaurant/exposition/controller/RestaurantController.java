@@ -65,7 +65,7 @@ public class RestaurantController {
 
         locationService.update(Location.update(restaurant.getLocation().getId(), createRestaurantDTO.location));
         restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
-        return ResponseEntity.ok(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri());
+        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/restaurant/{id}")

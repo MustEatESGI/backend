@@ -54,7 +54,7 @@ public class MealOrderedController {
     public ResponseEntity updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         MealOrdered mealOrdered = mealOrderedService.get(id);
         mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO));
-        return ResponseEntity.ok(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri());
+        return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/mealordered/{id}")

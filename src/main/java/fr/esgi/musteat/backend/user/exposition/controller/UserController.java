@@ -58,7 +58,7 @@ public class UserController {
 
         locationService.update(Location.update(user.getLocation().getId(), createUserDTO.location));
         userService.update(User.update(user, createUserDTO));
-        return ResponseEntity.ok(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri());
+        return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/user/{id}")
