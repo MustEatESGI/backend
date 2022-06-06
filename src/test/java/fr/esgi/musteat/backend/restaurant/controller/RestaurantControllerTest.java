@@ -1,7 +1,9 @@
 package fr.esgi.musteat.backend.restaurant.controller;
 
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
+import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDetailsDTO;
 import io.restassured.RestAssured;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import java.util.List;
 
@@ -36,6 +39,11 @@ public class RestaurantControllerTest {
     void setup() {
         RestAssured.port = port;
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+    }
+
+    @AfterTestClass
+    public void tearDown() {
+        fixturesController.resetFixtures();
     }
 
     @Test
@@ -87,7 +95,7 @@ public class RestaurantControllerTest {
 
     @Test
     @Order(3)
-    void should_retrieve_single_user() {
+    void should_retrieve_single_restaurant() {
         var restaurantDTO = when()
                 .get("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
         .then()
@@ -96,5 +104,61 @@ public class RestaurantControllerTest {
                 .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
 
         assertThat(restaurantDTO).isEqualTo(RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of()));
+    }
+
+    @Test
+    @Order(4)
+    void should_update_restaurant_name() {
+        var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
+        updateRestaurantDTO.name = "newRestaurantName";
+
+        var location = given()
+                .contentType(ContentType.JSON)
+                .body(updateRestaurantDTO)
+        .when()
+                .put("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+        .then()
+                .statusCode(201)
+                .extract()
+                .header("Location");
+
+        assertThat(location).isNotEmpty();
+
+        var restaurantDTO = when()
+                .get(location)
+        .then()
+                .statusCode(200)
+                .extract()
+                .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
+
+        assertThat(restaurantDTO).isEqualTo(updateRestaurantDTO);
+    }
+
+    @Test
+    @Order(5)
+    void should_update_restaurant_location() {
+        var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
+        updateRestaurantDTO.location = LocationDTO.from(new Location(45.0, 3.0));
+
+        var location = given()
+                .contentType(ContentType.JSON)
+                .body(updateRestaurantDTO)
+                .when()
+                .put("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+                .then()
+                .statusCode(201)
+                .extract()
+                .header("Location");
+
+        assertThat(location).isNotEmpty();
+
+        var restaurantDTO = when()
+                .get(location)
+                .then()
+                .statusCode(200)
+                .extract()
+                .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
+
+        assertThat(restaurantDTO).isEqualTo(updateRestaurantDTO);
     }
 }

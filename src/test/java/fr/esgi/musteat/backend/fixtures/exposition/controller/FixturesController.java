@@ -18,17 +18,16 @@ public class FixturesController {
         this.locationService = locationService;
     }
 
+    public void resetFixtures() {
+        this.cleanLocationFixtures();
+        this.cleanRestaurantFixtures();
+    }
+
     public Location getLocationFixture() {
         if (this.locationFixture == null) {
             this.addLocationFixture();
         }
         return this.locationFixture;
-    }
-
-    public void addLocationFixture() {
-        Location location = new Location(40.0, 2.0);
-        this.locationService.create(location);
-        this.locationFixture = location;
     }
 
     public Restaurant getRestaurantFixtures() {
@@ -38,9 +37,23 @@ public class FixturesController {
         return this.restaurantFixture;
     }
 
-    public void addRestaurantFixtures() {
+    private void addLocationFixture() {
+        Location location = new Location(40.0, 2.0);
+        this.locationService.create(location);
+        this.locationFixture = location;
+    }
+
+    private void addRestaurantFixtures() {
         Restaurant restaurant = new Restaurant("fixtureRestaurant", getLocationFixture());
         this.restaurantService.create(restaurant);
         this.restaurantFixture = restaurant;
+    }
+
+    private void cleanLocationFixtures() {
+        this.locationService.delete(this.locationFixture.getId());
+    }
+
+    private void cleanRestaurantFixtures() {
+        this.restaurantService.delete(this.restaurantFixture.getId());
     }
 }
