@@ -55,6 +55,7 @@ public class RestaurantControllerTest {
         createRestaurantDTO.location = new CreateLocationDTO();
         createRestaurantDTO.location.latitude = 10.0;
         createRestaurantDTO.location.longitude = 10.0;
+
         var location = given()
                 .contentType(ContentType.JSON)
                 .body(createRestaurantDTO)
@@ -83,6 +84,38 @@ public class RestaurantControllerTest {
 
     @Test
     @Order(2)
+    void should_not_create_restaurant_with_invalid_name() {
+        var createRestaurantDTO = new CreateRestaurantDTO();
+        createRestaurantDTO.name = null;
+        createRestaurantDTO.location = new CreateLocationDTO();
+        createRestaurantDTO.location.latitude = 10.0;
+        createRestaurantDTO.location.longitude = 10.0;
+        given()
+                .contentType(ContentType.JSON)
+                .body(createRestaurantDTO)
+                .when()
+                .post("/restaurant")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(3)
+    void should_not_create_restaurant_with_invalid_location() {
+        var createRestaurantDTO = new CreateRestaurantDTO();
+        createRestaurantDTO.name = "testRestaurant";
+        createRestaurantDTO.location = null;
+        given()
+                .contentType(ContentType.JSON)
+                .body(createRestaurantDTO)
+                .when()
+                .post("/restaurant")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(4)
     void should_retrieve_bootstrapped_restaurants() {
         var restaurantDTOs = when()
                 .get("/restaurants")
@@ -95,7 +128,7 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    @Order(3)
+    @Order(5)
     void should_retrieve_single_restaurant() {
         var restaurantDTO = when()
                 .get("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
@@ -108,7 +141,7 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    @Order(4)
+    @Order(6)
     void should_update_restaurant_name() {
         var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
         updateRestaurantDTO.name = "newRestaurantName";
@@ -136,7 +169,22 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
+    void should_not_update_restaurant_name_when_invalid() {
+        var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
+        updateRestaurantDTO.name = null;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateRestaurantDTO)
+                .when()
+                .put("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(8)
     void should_update_restaurant_location() {
         var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
         updateRestaurantDTO.location = LocationDTO.from(new Location(45.0, 3.0));
@@ -164,7 +212,22 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(9)
+    void should_not_update_restaurant_location_when_invalid() {
+        var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
+        updateRestaurantDTO.location = null;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateRestaurantDTO)
+                .when()
+                .put("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(10)
     void should_delete_restaurant() {
         given()
                 .when()

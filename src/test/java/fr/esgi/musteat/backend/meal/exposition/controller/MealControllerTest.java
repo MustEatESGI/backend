@@ -78,6 +78,54 @@ public class MealControllerTest {
 
     @Test
     @Order(2)
+    void should_not_create_meal_with_invalid_name() {
+        var createMealDTO = new CreateMealDTO();
+        createMealDTO.name = null;
+        createMealDTO.price = 10L;
+        createMealDTO.restaurantId = this.fixturesController.getRestaurantFixtures().getId();
+        given()
+                .contentType(ContentType.JSON)
+                .body(createMealDTO)
+                .when()
+                .post("/meal")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(3)
+    void should_not_create_meal_with_invalid_price() {
+        var createMealDTO = new CreateMealDTO();
+        createMealDTO.name = "testMeal";
+        createMealDTO.price = null;
+        createMealDTO.restaurantId = this.fixturesController.getRestaurantFixtures().getId();
+        given()
+                .contentType(ContentType.JSON)
+                .body(createMealDTO)
+                .when()
+                .post("/meal")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(4)
+    void should_not_create_meal_with_invalid_restaurant_id() {
+        var createMealDTO = new CreateMealDTO();
+        createMealDTO.name = "testMeal";
+        createMealDTO.price = 10L;
+        createMealDTO.restaurantId = null;
+        given()
+                .contentType(ContentType.JSON)
+                .body(createMealDTO)
+                .when()
+                .post("/meal")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(5)
     void should_retrieve_bootstrapped_meals() {
         var mealDTOs = when()
                 .get("/meals")
@@ -90,7 +138,7 @@ public class MealControllerTest {
     }
 
     @Test
-    @Order(3)
+    @Order(6)
     void should_retrieve_single_meal() {
         var mealDTO = when()
                 .get("/meal/" + this.fixturesController.getMealFixture().getId())
@@ -103,7 +151,7 @@ public class MealControllerTest {
     }
 
     @Test
-    @Order(4)
+    @Order(7)
     void should_update_meal_name() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.name = "newMealName";
@@ -132,7 +180,22 @@ public class MealControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(8)
+    void should_not_update_meal_name_when_invalid() {
+        var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
+        updateMealDTO.name = null;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateMealDTO)
+                .when()
+                .put("/meal/" + this.fixturesController.getMealFixture().getId())
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(9)
     void should_update_meal_price() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.price = 20L;
@@ -160,7 +223,22 @@ public class MealControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(10)
+    void should_not_update_meal_price_when_invalid() {
+        var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
+        updateMealDTO.price = null;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateMealDTO)
+                .when()
+                .put("/meal/" + this.fixturesController.getMealFixture().getId())
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(11)
     void should_update_meal_restaurant() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         this.fixturesController.addRestaurantFixtures();
@@ -189,7 +267,22 @@ public class MealControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(12)
+    void should_not_update_meal_restaurant_id_when_invalid() {
+        var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
+        updateMealDTO.restaurantId = null;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateMealDTO)
+                .when()
+                .put("/meal/" + this.fixturesController.getMealFixture().getId())
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Order(13)
     void should_delete_meal() {
         given()
                 .when()

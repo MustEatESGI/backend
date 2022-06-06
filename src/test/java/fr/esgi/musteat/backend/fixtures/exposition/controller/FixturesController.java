@@ -6,27 +6,37 @@ import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
+import fr.esgi.musteat.backend.user.domain.User;
+import fr.esgi.musteat.backend.user.infrastructure.service.UserService;
 
 public class FixturesController {
 
     LocationService locationService;
     MealService mealService;
     RestaurantService restaurantService;
+    UserService userService;
 
     private Location locationFixture;
     private Meal mealFixture;
     private Restaurant restaurantFixture;
+    private User userFixture;
 
-    public FixturesController(RestaurantService restaurantService, MealService mealService, LocationService locationService) {
-        this.restaurantService = restaurantService;
+    public FixturesController(
+            LocationService locationService,
+            MealService mealService,
+            RestaurantService restaurantService,
+            UserService userService) {
         this.mealService = mealService;
         this.locationService = locationService;
+        this.restaurantService = restaurantService;
+        this.userService = userService;
     }
 
     public void resetFixtures() {
         this.cleanLocationFixtures();
         this.cleanMealFixtures();
         this.cleanRestaurantFixtures();
+        this.cleanUserFixtures();
     }
 
     public Location getLocationFixture() {
@@ -50,6 +60,13 @@ public class FixturesController {
         return this.restaurantFixture;
     }
 
+    public User getUserFixture() {
+        if (this.userFixture == null) {
+            this.addUserFixture();
+        }
+        return this.userFixture;
+    }
+
     public void addLocationFixture() {
         Location location = new Location(40.0, 2.0);
         this.locationService.create(location);
@@ -66,6 +83,12 @@ public class FixturesController {
         Restaurant restaurant = new Restaurant("fixtureRestaurant", getLocationFixture());
         this.restaurantService.create(restaurant);
         this.restaurantFixture = restaurant;
+    }
+
+    public void addUserFixture() {
+        User user = new User("fixtureUser", "password", getLocationFixture());
+        this.userService.create(user);
+        this.userFixture = user;
     }
 
     public void cleanLocationFixtures() {
@@ -86,6 +109,13 @@ public class FixturesController {
         if (this.restaurantFixture != null) {
             this.restaurantService.delete(this.restaurantFixture.getId());
             this.restaurantFixture = null;
+        }
+    }
+
+    public void cleanUserFixtures() {
+        if (this.userFixture != null) {
+            this.userService.delete(this.userFixture.getId());
+            this.userFixture = null;
         }
     }
 }
