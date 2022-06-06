@@ -38,6 +38,12 @@ public class UserController {
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable @Valid Long id) {
+        User user = userService.get(id);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(UserDTO.from(userService.get(id)));
     }
@@ -55,6 +61,10 @@ public class UserController {
     @PutMapping(value = "/user/{id}")
     public ResponseEntity updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
         User user = userService.get(id);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
 
         locationService.update(Location.update(user.getLocation().getId(), createUserDTO.location));
         userService.update(User.update(user, createUserDTO));

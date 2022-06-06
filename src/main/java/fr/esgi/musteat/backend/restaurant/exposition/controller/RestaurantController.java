@@ -44,6 +44,12 @@ public class RestaurantController {
 
     @GetMapping(value = "/restaurant/{id}")
     public ResponseEntity<RestaurantDetailsDTO> getRestaurant(@PathVariable @Valid Long id) {
+        Restaurant restaurant = restaurantService.get(id);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         List<Meal> meals = mealService.findByRestaurantId(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(RestaurantDetailsDTO.from(restaurantService.get(id), meals));
@@ -62,6 +68,10 @@ public class RestaurantController {
     @PutMapping(value = "/restaurant/{id}")
     public ResponseEntity updateRestaurant(@PathVariable @Valid Long id, @RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
         Restaurant restaurant = restaurantService.get(id);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
 
         locationService.update(Location.update(restaurant.getLocation().getId(), createRestaurantDTO.location));
         restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));

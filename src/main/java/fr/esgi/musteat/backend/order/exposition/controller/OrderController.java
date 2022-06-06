@@ -43,14 +43,30 @@ public class OrderController {
 
     @GetMapping(value = "/order/{id}")
     public ResponseEntity<OrderDTO> getOrder(@PathVariable @Valid Long id) {
+        Order order = orderService.get(id);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(OrderDTO.from(orderService.get(id)));
+                .body(OrderDTO.from(order));
     }
 
     @PostMapping(value = "/order")
     public ResponseEntity createOrder(@RequestBody @Valid CreateOrderDTO createOrderDTO) {
         User user = userService.get(createOrderDTO.userId);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
         Restaurant restaurant = restaurantService.get(createOrderDTO.restaurantId);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+
         Order order = Order.from(createOrderDTO, user, restaurant);
         orderService.create(order);
         return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri()).build();
@@ -59,6 +75,11 @@ public class OrderController {
     @PutMapping(value = "/order/{id}")
     public ResponseEntity updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO) {
         Order order = orderService.get(id);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
         orderService.update(Order.update(order, createOrderDTO));
         return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri()).build();
     }

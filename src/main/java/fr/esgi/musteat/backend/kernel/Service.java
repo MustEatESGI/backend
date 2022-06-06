@@ -16,7 +16,7 @@ public abstract class Service<R extends Repository<V, K>, V extends Entity<K>, K
     }
 
     public V get(K key) {
-        return repository.get(key).orElseThrow(EntityNotFoundException::new);
+        return repository.get(key).orElse(null);
     }
 
     public List<V> getAll() {
