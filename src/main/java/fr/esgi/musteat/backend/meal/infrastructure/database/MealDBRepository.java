@@ -13,6 +13,6 @@ public interface MealDBRepository extends JpaRepository<MealDB, Long> {
     @Query("SELECT m FROM MealDB m WHERE m.restaurant.id = :restaurantId")
     List<MealDB> findAllByRestaurantId(@Param("restaurantId") Long restaurantId);
 
-    @Query("SELECT m FROM MealDB m WHERE m.name = :name")
+    @Query("SELECT m FROM MealDB m WHERE SIMILARITY(m.name, :name) >= 0.5")
     List<MealDB> findAllByName(@Param("name") String name);
 }
