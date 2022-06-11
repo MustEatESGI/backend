@@ -4,8 +4,11 @@ import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
 
+import javax.persistence.Column;
+
 public class User extends Entity<Long> {
 
+    @Column(unique = true)
     private final String name;
     private final String password;
     private final Location location;
