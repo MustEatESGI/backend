@@ -2,7 +2,6 @@ package fr.esgi.musteat.backend.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -23,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
-    @Value("${jwt_secret_key}")
+    @Value("${jwt_secret_key:}")
     private String secretKey;
 
     public PasswordEncoder passwordEncoder()

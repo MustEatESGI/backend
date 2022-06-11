@@ -30,7 +30,7 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     public User findByUsername(String username) {
          return repository.getAll()
                  .stream()
-                 .filter((user) -> user.getName().equals(username))
+                 .filter(user -> user.getName().equals(username))
                  .findFirst()
                  .orElseThrow();
 

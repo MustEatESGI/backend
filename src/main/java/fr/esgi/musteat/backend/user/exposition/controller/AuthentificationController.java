@@ -14,10 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class AuthentificationController {
 
 
     @GetMapping("/token/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
@@ -70,7 +68,7 @@ public class AuthentificationController {
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
             }
         }else {
-            throw new RuntimeException("Refresh token is missing");
+            throw new Exception("Missing refresh token");
         }
     }
 }
