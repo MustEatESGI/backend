@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
@@ -20,11 +21,11 @@ import java.util.Collection;
 @Slf4j
 public class UserService extends Service<UserRepository, User, Long> implements UserDetailsService {
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository repository, Validator<User> validator, PasswordEncoder passwordEncoder) {
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    public UserService(UserRepository repository, Validator<User> validator) {
         super(repository, validator, "user");
-        this.passwordEncoder = passwordEncoder;
     }
 
     public User findByUsername(String username) {
@@ -52,7 +53,7 @@ public class UserService extends Service<UserRepository, User, Long> implements 
 
     @Override
     public void create(User entity) {
-        User user = new User(entity.getName(), passwordEncoder.encode(entity.getPassword()), entity.getLocation());
+        User user = new User(entity.getName(), passwordEncoder().encode(entity.getPassword()), entity.getLocation());
         super.create(user);
     }
 }
