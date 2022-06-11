@@ -40,9 +40,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login/**", "/users/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("AUTHENTICATED");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/user").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/**").hasAnyAuthority("AUTHENTICATED");
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasAnyAuthority("AUTHENTICATED");
+        http.authorizeRequests().antMatchers("/login/**", "/users/token/refresh/**").permitAll();
             http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), secretKey));
         http.addFilterBefore(new CustomAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
