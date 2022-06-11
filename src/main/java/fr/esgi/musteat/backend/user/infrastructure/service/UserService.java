@@ -4,12 +4,12 @@ import fr.esgi.musteat.backend.kernel.Service;
 import fr.esgi.musteat.backend.kernel.Validator;
 import fr.esgi.musteat.backend.user.domain.User;
 import fr.esgi.musteat.backend.user.domain.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -20,8 +20,11 @@ import java.util.Collection;
 @Slf4j
 public class UserService extends Service<UserRepository, User, Long> implements UserDetailsService {
 
-    public UserService(UserRepository repository, Validator<User> validator) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository repository, Validator<User> validator, PasswordEncoder passwordEncoder) {
         super(repository, validator, "user");
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findByUsername(String username) {
@@ -37,7 +40,6 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.findByUsername(username);
         if(user == null) {
-            log.error("User not found in the database");
             throw new UsernameNotFoundException("User not found in the database");
         }else {
             log.info(user.toString());
@@ -46,5 +48,11 @@ public class UserService extends Service<UserRepository, User, Long> implements 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("AUTHENTICATED"));
         return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);
+    }
+
+    @Override
+    public void create(User entity) {
+        User user = new User(entity.getName(), passwordEncoder.encode(entity.getPassword()), entity.getLocation());
+        super.create(user);
     }
 }
