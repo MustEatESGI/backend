@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthentificationController {
 
     private final UserService userService;
-    @Value("auth.secret_key")
+    @Value("${jwt_secret_key:}")
     private String secretKey;
 
 
