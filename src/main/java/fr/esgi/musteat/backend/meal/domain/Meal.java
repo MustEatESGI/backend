@@ -40,6 +40,10 @@ public class Meal extends Entity<Long> {
         return price;
     }
 
+    public Long getDistance() {
+        return restaurant.getLocation().getDistance();
+    }
+
     public Restaurant getRestaurant() {
         return restaurant;
     }

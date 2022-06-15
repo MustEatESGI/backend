@@ -36,6 +36,11 @@ public class Location extends Entity<Long> {
         return longitude;
     }
 
+    public long getDistance() {
+        // TODO : Get user location and calculate distance
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     @Override
     public String toString() {
         return "Location{" +
