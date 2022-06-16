@@ -4,8 +4,11 @@ import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
 
+import javax.persistence.Column;
+
 public class User extends Entity<Long> {
 
+    @Column(unique = true)
     private final String name;
     private final String password;
     private final Location location;
@@ -25,11 +28,11 @@ public class User extends Entity<Long> {
     }
 
     public static User from(CreateUserDTO createUserDTO, Location location) {
-        return new User(createUserDTO.name, createUserDTO.password, location);
+        return new User(createUserDTO.username, createUserDTO.password, location);
     }
 
     public static User update(User user, CreateUserDTO createUserDTO) {
-        return new User(user.getId(), createUserDTO.name, createUserDTO.password, Location.update(user.getLocation(), createUserDTO.location));
+        return new User(user.getId(), createUserDTO.username, createUserDTO.password, Location.update(user.getLocation(), createUserDTO.location));
     }
 
     public String getName() {

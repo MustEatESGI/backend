@@ -9,7 +9,7 @@ public class CreateUserDTO {
 
     @NotNull
     @NotBlank
-    public String name;
+    public String username;
     @NotNull
     @NotBlank
     public String password;
