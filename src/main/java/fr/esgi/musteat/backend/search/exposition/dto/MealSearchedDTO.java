@@ -1,5 +1,6 @@
 package fr.esgi.musteat.backend.search.exposition.dto;
 
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 
 import javax.validation.constraints.NotBlank;
@@ -31,7 +32,7 @@ public class MealSearchedDTO {
         this.picture = "http://source.unsplash.com/random?" + name;
     }
 
-    public static MealSearchedDTO from(Meal meal) {
-        return new MealSearchedDTO(meal.getId(), meal.getName(), meal.getPrice(), meal.getDistance(), meal.getRestaurant().getId());
+    public static MealSearchedDTO from(Meal meal, Location userLocation) {
+        return new MealSearchedDTO(meal.getId(), meal.getName(), meal.getPrice(), meal.getDistance(userLocation), meal.getRestaurant().getId());
     }
 }

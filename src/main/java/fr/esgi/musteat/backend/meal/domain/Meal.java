@@ -1,6 +1,7 @@
 package fr.esgi.musteat.backend.meal.domain;
 
 import fr.esgi.musteat.backend.kernel.Entity;
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.meal.exposition.dto.CreateMealDTO;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 
@@ -40,8 +41,8 @@ public class Meal extends Entity<Long> {
         return price;
     }
 
-    public Long getDistance() {
-        return restaurant.getLocation().getDistance();
+    public Long getDistance(Location userLocation) {
+        return restaurant.getLocation().getDistance(userLocation);
     }
 
     public Restaurant getRestaurant() {

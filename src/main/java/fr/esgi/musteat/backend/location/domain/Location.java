@@ -36,9 +36,8 @@ public class Location extends Entity<Long> {
         return longitude;
     }
 
-    public long getDistance() {
-        // TODO : Get user location and calculate distance
-        throw new UnsupportedOperationException("Not implemented yet");
+    public long getDistance(Location userLocation) {
+        return (long) (Math.sqrt(Math.pow(userLocation.getLatitude() - latitude, 2) + Math.pow(userLocation.getLongitude() - longitude, 2)) * 100);
     }
 
     @Override
