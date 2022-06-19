@@ -63,13 +63,19 @@ public class MealOrderedController {
 
     @PutMapping(value = "/mealordered/{id}")
     public ResponseEntity updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+        Order order = orderService.get(createMealOrderedDTO.orderId);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
         MealOrdered mealOrdered = mealOrderedService.get(id);
 
         if (mealOrdered == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("MealOrdered not found");
         }
 
-        mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO));
+        mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO, order));
         return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
     }
 

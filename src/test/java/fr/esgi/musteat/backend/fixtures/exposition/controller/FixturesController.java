@@ -4,6 +4,8 @@ import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
+import fr.esgi.musteat.backend.mealordered.domain.MealOrdered;
+import fr.esgi.musteat.backend.mealordered.infrastructure.service.MealOrderedService;
 import fr.esgi.musteat.backend.order.domain.Order;
 import fr.esgi.musteat.backend.order.infrastructure.service.OrderService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
@@ -18,12 +20,14 @@ public class FixturesController {
 
     LocationService locationService;
     MealService mealService;
+    MealOrderedService mealOrderedService;
     OrderService orderService;
     RestaurantService restaurantService;
     UserService userService;
 
     private Location locationFixture;
     private Meal mealFixture;
+    private MealOrdered mealOrderedFixture;
     private Order orderFixture;
     private Restaurant restaurantFixture;
     private User userFixture;
@@ -31,11 +35,13 @@ public class FixturesController {
     public FixturesController(
             LocationService locationService,
             MealService mealService,
+            MealOrderedService mealOrderedService,
             OrderService orderService,
             RestaurantService restaurantService,
             UserService userService) {
         this.locationService = locationService;
         this.mealService = mealService;
+        this.mealOrderedService = mealOrderedService;
         this.orderService = orderService;
         this.restaurantService = restaurantService;
         this.userService = userService;
@@ -44,6 +50,7 @@ public class FixturesController {
     public void resetFixtures() {
         this.cleanLocationFixtures();
         this.cleanMealFixtures();
+        this.cleanMealOrderedFixtures();
         this.cleanOrderFixtures();
         this.cleanRestaurantFixtures();
         this.cleanUserFixtures();
@@ -61,6 +68,13 @@ public class FixturesController {
             this.addMealFixture();
         }
         return this.mealFixture;
+    }
+
+    public MealOrdered getMealOrderedFixture() {
+        if (this.mealOrderedFixture == null) {
+            this.addMealOrderedFixture();
+        }
+        return this.mealOrderedFixture;
     }
 
     public Order getOrderFixture() {
@@ -96,6 +110,12 @@ public class FixturesController {
         this.mealFixture = meal;
     }
 
+    public void addMealOrderedFixture() {
+        MealOrdered mealOrdered = new MealOrdered("fixtureMealOrdered", 10_00L, getOrderFixture());
+        this.mealOrderedService.create(mealOrdered);
+        this.mealOrderedFixture = mealOrdered;
+    }
+
     public void addOrderFixture() {
         Order order = new Order(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), getUserFixture(), getRestaurantFixtures());
         this.orderService.create(order);
@@ -125,6 +145,13 @@ public class FixturesController {
         if (this.mealFixture != null) {
             this.mealService.delete(this.mealFixture.getId());
             this.mealFixture = null;
+        }
+    }
+
+    public void cleanMealOrderedFixtures() {
+        if (this.mealOrderedFixture != null) {
+            this.mealOrderedService.delete(this.mealOrderedFixture.getId());
+            this.mealOrderedFixture = null;
         }
     }
 

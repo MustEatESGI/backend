@@ -28,8 +28,8 @@ public class MealOrdered extends Entity<Long> {
         return new MealOrdered(createMealOrderedDTO.name, createMealOrderedDTO.price, user);
     }
 
-    public static MealOrdered update(MealOrdered mealOrdered, CreateMealOrderedDTO createMealOrderedDTO) {
-        return new MealOrdered(mealOrdered.getId(), createMealOrderedDTO.name, createMealOrderedDTO.price, mealOrdered.getOrder());
+    public static MealOrdered update(MealOrdered mealOrdered, CreateMealOrderedDTO createMealOrderedDTO, Order order) {
+        return new MealOrdered(mealOrdered.getId(), createMealOrderedDTO.name, createMealOrderedDTO.price, order);
     }
 
     public String getName() {
