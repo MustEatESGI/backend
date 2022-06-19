@@ -2,6 +2,7 @@ package fr.esgi.musteat.backend.user.domain;
 
 import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
 
 import javax.persistence.Column;
@@ -31,8 +32,8 @@ public class User extends Entity<Long> {
         return new User(createUserDTO.username, createUserDTO.password, location);
     }
 
-    public static User update(User user, CreateUserDTO createUserDTO) {
-        return new User(user.getId(), createUserDTO.username, createUserDTO.password, Location.update(user.getLocation(), createUserDTO.location));
+    public static User update(User user, CreateUserDTO createUserDTO, AddressCodingDTO addressCodingDTO) {
+        return new User(user.getId(), createUserDTO.username, createUserDTO.password, Location.update(user.getLocation(), addressCodingDTO));
     }
 
     public String getName() {

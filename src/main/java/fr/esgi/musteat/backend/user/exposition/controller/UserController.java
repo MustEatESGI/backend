@@ -1,6 +1,7 @@
 package fr.esgi.musteat.backend.user.exposition.controller;
 
 import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.user.domain.User;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
@@ -44,7 +45,8 @@ public class UserController {
 
     @PostMapping(value = "/user")
     public ResponseEntity createUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
-        Location location = Location.from(createUserDTO.location);
+        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
+        Location location = Location.from(addressCodingDTO);
         locationService.create(location);
 
         User user = User.from(createUserDTO, location);
@@ -55,9 +57,11 @@ public class UserController {
     @PutMapping(value = "/user/{id}")
     public ResponseEntity updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
         User user = userService.get(id);
+        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
+        Location location = Location.from(addressCodingDTO);
 
-        locationService.update(Location.update(user.getLocation(), createUserDTO.location));
-        userService.update(User.update(user, createUserDTO));
+        locationService.update(Location.update(user.getLocation(), addressCodingDTO));
+        userService.update(User.update(user, createUserDTO, addressCodingDTO));
         return ResponseEntity.ok(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri());
     }
 

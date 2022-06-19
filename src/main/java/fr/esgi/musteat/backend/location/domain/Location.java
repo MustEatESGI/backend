@@ -20,12 +20,12 @@ public class Location extends Entity<Long> {
         this.longitude = longitude;
     }
 
-    public static Location from(AddressCodingDTO createLocationDTO) {
-        return new Location(createLocationDTO.latitude, createLocationDTO.longitude);
+    public static Location from(AddressCodingDTO addressCodingDTO) {
+        return new Location(addressCodingDTO.latitude, addressCodingDTO.longitude);
     }
 
-    public static Location update(Location location, AddressCodingDTO createLocationDTO) {
-        return new Location(location.getId(), createLocationDTO.latitude, createLocationDTO.longitude);
+    public static Location update(Location location, AddressCodingDTO addressCodingDTO) {
+        return new Location(location.getId(), addressCodingDTO.latitude, addressCodingDTO.longitude);
     }
 
     public Double getLatitude() {
