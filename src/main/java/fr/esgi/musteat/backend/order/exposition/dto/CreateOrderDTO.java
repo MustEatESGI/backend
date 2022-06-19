@@ -1,7 +1,9 @@
 package fr.esgi.musteat.backend.order.exposition.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CreateOrderDTO {
 
@@ -10,4 +12,7 @@ public class CreateOrderDTO {
     public Long userId;
     @NotNull
     public Long restaurantId;
+    @NotNull
+    @NotEmpty
+    public List<Long> mealsId;
 }

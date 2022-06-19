@@ -52,6 +52,7 @@ public class OrderControllerTest {
         var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = this.fixturesController.getRestaurantFixtures().getId();
+        createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
                 .contentType(ContentType.JSON)
@@ -141,6 +142,7 @@ public class OrderControllerTest {
         var createOrderDTO = new  CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
+        createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
                 .contentType(ContentType.JSON)
@@ -188,6 +190,7 @@ public class OrderControllerTest {
         var createOrderDTO = new  CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getOrderFixture().getUser().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
+        createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
                 .contentType(ContentType.JSON)

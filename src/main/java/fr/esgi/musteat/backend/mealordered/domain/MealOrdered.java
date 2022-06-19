@@ -1,8 +1,10 @@
 package fr.esgi.musteat.backend.mealordered.domain;
 
 import fr.esgi.musteat.backend.kernel.Entity;
+import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.mealordered.exposition.dto.CreateMealOrderedDTO;
 import fr.esgi.musteat.backend.order.domain.Order;
+import org.aspectj.weaver.ast.Or;
 
 public class MealOrdered extends Entity<Long> {
 
@@ -24,8 +26,12 @@ public class MealOrdered extends Entity<Long> {
         this.order = order;
     }
 
-    public static MealOrdered from(CreateMealOrderedDTO createMealOrderedDTO, Order user) {
-        return new MealOrdered(createMealOrderedDTO.name, createMealOrderedDTO.price, user);
+    public static MealOrdered from(CreateMealOrderedDTO createMealOrderedDTO, Order order) {
+        return new MealOrdered(createMealOrderedDTO.name, createMealOrderedDTO.price, order);
+    }
+
+    public static MealOrdered from(Meal meal, Order order) {
+        return new MealOrdered(meal.getName(), meal.getPrice(), order);
     }
 
     public static MealOrdered update(MealOrdered mealOrdered, CreateMealOrderedDTO createMealOrderedDTO, Order order) {
