@@ -1,15 +1,11 @@
-package fr.esgi.musteat.backend.location.exposition.controller;
+package fr.esgi.musteat.backend.search.exposition.controller;
 
 import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
-import fr.esgi.musteat.backend.location.domain.Location;
-import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
-import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
-import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
+import fr.esgi.musteat.backend.search.exposition.dto.MealSearchedDTO;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,14 +14,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class LocationControllerTest extends ApiTestBase {
+public class SearchControllerTest extends ApiTestBase {
 
     @LocalServerPort
     private int port;
@@ -50,32 +45,16 @@ public class LocationControllerTest extends ApiTestBase {
 
     @Test
     @Order(1)
-    void should_create_location() {
-        var createLocationDTO = new CreateLocationDTO();
-        createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
-
-        var location = given()
+    void should_get_meals() {
+        String mealName = fixturesController.getMealFixture().getName();
+        var meals = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-                .contentType(ContentType.JSON)
-                .body(createLocationDTO)
-                .when()
-                .post("/location")
+                .get("/search/"+mealName.toLowerCase()+"/price")
                 .then()
-                .statusCode(201)
-                .extract()
-                .header("Location");
+                .extract().body().jsonPath().getList("", MealSearchedDTO.class);
 
-        assertThat(location).isNotEmpty();
-
-        var LocationDTO = given()
-                .headers("Authorization", "Bearer " + this.jwt)
-                .when()
-                .get(location)
-                .then()
-                .statusCode(200)
-                .extract()
-                .body().jsonPath().getObject(".", LocationDTO.class);
-
-        assertThat(location).isNotNull();
+        assertThat(meals).isNotEmpty();
+        assertThat(meals.size()).isEqualTo(1);
+        assertThat(meals.get(0).name).isEqualTo(mealName);
     }
 }
