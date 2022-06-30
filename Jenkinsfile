@@ -95,14 +95,26 @@ pipeline {
                 }
             }
         }
+        stage('Delete docker local image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE'), file(credentialsId: 'ESGI_MUSTEAT_GCLOUD_KEY', variable: 'AUTH')]) {
+                        def docker = tool 'docker-agent';
+                        sh "${docker}/bin/docker image rm europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest"
+                    }
+
+                }
+            }
+        }
         stage('Cleaning project') {
             steps {
                 script {
                     def mvn = tool 'maven-3.8.4';
                     def docker = tool 'docker-agent';
                     sh "${mvn}/bin/mvn clean"
-                    sh "${docker}/bin/docker image rm europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest"
-
                 }
             }
         }
