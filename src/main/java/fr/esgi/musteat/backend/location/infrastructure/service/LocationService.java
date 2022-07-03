@@ -16,10 +16,10 @@ import java.util.LinkedHashMap;
 @org.springframework.stereotype.Service
 public class LocationService extends Service<LocationRepository, Location, Long> {
 
-    @Value("${position-stack.api.key}")
+    @Value("${position-stack.api.key:null}")
     private String positionStackApiKey;
 
-    @Value("${google-maps.api.key}")
+    @Value("${google-maps.api.key:null}")
     private String googleMapsStackApiKey;
 
     public LocationService(LocationRepository repository, Validator<Location> validator) {
