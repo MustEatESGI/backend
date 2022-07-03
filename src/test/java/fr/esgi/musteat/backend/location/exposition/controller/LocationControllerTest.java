@@ -56,6 +56,7 @@ public class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
+    @Order(1)
     void should_create_location() {
         var createLocationDTO = new CreateLocationDTO();
         createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
