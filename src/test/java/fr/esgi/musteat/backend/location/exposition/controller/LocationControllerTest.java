@@ -3,14 +3,18 @@ package fr.esgi.musteat.backend.location.exposition.controller;
 import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
 import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
+import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -35,6 +39,9 @@ public class LocationControllerTest extends ApiTestBase {
     @Autowired
     private FixturesController fixturesController;
 
+    @Mock
+    private LocationService locationService;
+
     @BeforeEach
     void setup() {
         RestAssured.port = port;
@@ -49,10 +56,10 @@ public class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(1)
     void should_create_location() {
         var createLocationDTO = new CreateLocationDTO();
         createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
+        Mockito.when(locationService.getLocationFromAddress(createLocationDTO)).thenReturn(new AddressCodingDTO(4.0, 2.0));
 
         var location = given()
                 .headers("Authorization", "Bearer " + this.jwt)
