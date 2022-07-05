@@ -4,6 +4,7 @@ import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
+import fr.esgi.musteat.backend.order.infrastructure.service.OrderService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDTO;
@@ -14,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -30,10 +34,13 @@ public class RestaurantController {
 
     private final MealService mealService;
 
-    public RestaurantController(RestaurantService restaurantService, LocationService locationService, MealService mealService) {
+    private final OrderService orderService;
+
+    public RestaurantController(RestaurantService restaurantService, LocationService locationService, MealService mealService, OrderService orderService) {
         this.restaurantService = restaurantService;
         this.locationService = locationService;
         this.mealService = mealService;
+        this.orderService = orderService;
     }
 
     @GetMapping(value = "/restaurants")
@@ -82,5 +89,15 @@ public class RestaurantController {
     public ResponseEntity<String> deleteRestaurant(@PathVariable @Valid Long id) {
         restaurantService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping(value = "/restaurants/trending")
+    public ResponseEntity<List<RestaurantDTO>> getTrendsRestaurant() {
+        Map<Restaurant, Long> restaurants = new HashMap<>();
+        restaurantService.getAll().forEach(restaurant -> restaurants.put(restaurant, orderService.getNumberOfOrdersForRestaurant(restaurant)));
+        List<Restaurant> trendyRestaurants = new ArrayList<>(restaurants.keySet());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(trendyRestaurants.stream().limit(5).map(RestaurantDTO::from).collect(Collectors.toList()));
     }
 }

@@ -3,6 +3,7 @@ pipeline {
     tools {
         maven 'maven-3.8.4'
         jdk 'openjdk-11'
+        dockerTool 'docker-agent'
     }
     stages {
         stage('SCM') {
@@ -46,9 +47,9 @@ pipeline {
         stage('Unit test') {
             steps {
                 script {
-                    def mvn = tool 'maven-3.8.4';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean test"
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                        def mvn = tool 'maven-3.8.4';
+                        sh "${mvn}/bin/mvn clean test -Dspring.config.location=${FILE}"
                     }
                 }
             }
@@ -60,9 +61,7 @@ pipeline {
             steps {
                 script {
                     def mvn = tool 'maven-3.8.4';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean package"
-                    }
+                    sh "${mvn}/bin/mvn clean package"
                 }
             }
         }
@@ -78,13 +77,44 @@ pipeline {
                 }
             }
         }
+        stage('Build Dockerfile and push to gcloud') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE'), file(credentialsId: 'ESGI_MUSTEAT_GCLOUD_KEY', variable: 'AUTH')]) {
+                        def docker = tool 'docker-agent';
+                        writeFile file: 'application.properties', text: readFile(FILE)
+                        sh "gcloud auth activate-service-account jenkins@tough-valve-353020.iam.gserviceaccount.com	--key-file=${AUTH}";
+                        sh "gcloud auth configure-docker europe-west9-docker.pkg.dev";
+                        sh "${docker}/bin/docker build --no-cache . -t europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest";
+                        sh "${docker}/bin/docker push europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest";
+                    }
+
+                }
+            }
+        }
+        stage('Delete docker local image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE'), file(credentialsId: 'ESGI_MUSTEAT_GCLOUD_KEY', variable: 'AUTH')]) {
+                        def docker = tool 'docker-agent';
+                        sh "${docker}/bin/docker image rm europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest"
+                    }
+
+                }
+            }
+        }
         stage('Cleaning project') {
             steps {
                 script {
                     def mvn = tool 'maven-3.8.4';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean"
-                    }
+                    def docker = tool 'docker-agent';
+                    sh "${mvn}/bin/mvn clean"
                 }
             }
         }
