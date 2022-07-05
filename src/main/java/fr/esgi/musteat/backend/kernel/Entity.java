@@ -6,7 +6,7 @@ public abstract class Entity <T>{
 
     protected T id;
 
-    public Entity(T id) {
+    protected Entity(T id) {
         this.id = id;
     }
 

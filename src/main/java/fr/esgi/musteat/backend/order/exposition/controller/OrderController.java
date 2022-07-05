@@ -65,7 +65,7 @@ public class OrderController {
     }
 
     @PostMapping(value = "/order")
-    public ResponseEntity createOrder(@RequestBody @Valid CreateOrderDTO createOrderDTO) {
+    public ResponseEntity<String> createOrder(@RequestBody @Valid CreateOrderDTO createOrderDTO) {
         List<Meal> orderedMeals = new ArrayList<>();
         User user = userService.get(createOrderDTO.userId);
 
@@ -96,7 +96,7 @@ public class OrderController {
     }
 
     @PutMapping(value = "/order/{id}")
-    public ResponseEntity updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO) {
+    public ResponseEntity<String> updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO) {
         Order order = orderService.get(id);
 
         if (order == null) {
@@ -108,7 +108,7 @@ public class OrderController {
     }
 
     @DeleteMapping(value = "/order/{id}")
-    public ResponseEntity deleteOrder(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteOrder(@PathVariable @Valid Long id) {
         orderService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

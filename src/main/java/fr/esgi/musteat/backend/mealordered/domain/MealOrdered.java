@@ -6,6 +6,8 @@ import fr.esgi.musteat.backend.mealordered.exposition.dto.CreateMealOrderedDTO;
 import fr.esgi.musteat.backend.order.domain.Order;
 import org.aspectj.weaver.ast.Or;
 
+import java.util.Objects;
+
 public class MealOrdered extends Entity<Long> {
 
     private final String name;
@@ -58,5 +60,19 @@ public class MealOrdered extends Entity<Long> {
                 ", price=" + price +
                 ", order=" + order +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MealOrdered that = (MealOrdered) o;
+        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(order, that.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, price, order);
     }
 }

@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/user")
-    public ResponseEntity createUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
         Location location = Location.from(createUserDTO.location);
         locationService.create(location);
 
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/user/{id}")
-    public ResponseEntity updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
+    public ResponseEntity<String> updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
         User user = userService.get(id);
 
         if (user == null) {
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/user/{id}")
-    public ResponseEntity deleteUser(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable @Valid Long id) {
         userService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -6,6 +6,7 @@ import fr.esgi.musteat.backend.meal.exposition.dto.MealDetailsDTO;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class MealController {
     }
 
     @PostMapping(value = "/meal")
-    public ResponseEntity createMeal(@RequestBody @Valid CreateMealDTO createMealDTO) {
+    public ResponseEntity<String> createMeal(@RequestBody @Valid CreateMealDTO createMealDTO) {
         Restaurant restaurant = restaurantService.get(createMealDTO.restaurantId);
 
         if (restaurant == null) {
@@ -62,7 +63,7 @@ public class MealController {
     }
 
     @PutMapping(value = "/meal/{id}")
-    public ResponseEntity updateMeal(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealDTO createMealDTO) {
+    public ResponseEntity<String> updateMeal(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealDTO createMealDTO) {
         Restaurant restaurant = restaurantService.get(createMealDTO.restaurantId);
 
         if (restaurant == null) {
@@ -80,7 +81,7 @@ public class MealController {
     }
 
     @DeleteMapping(value = "/meal/{id}")
-    public ResponseEntity deleteMeal(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteMeal(@PathVariable @Valid Long id) {
         mealService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

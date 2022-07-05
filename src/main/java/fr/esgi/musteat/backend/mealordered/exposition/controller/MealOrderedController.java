@@ -49,7 +49,7 @@ public class MealOrderedController {
     }
 
     @PostMapping(value = "/mealordered")
-    public ResponseEntity createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity<String> createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         Order order = orderService.get(createMealOrderedDTO.orderId);
 
         if (order == null) {
@@ -62,7 +62,7 @@ public class MealOrderedController {
     }
 
     @PutMapping(value = "/mealordered/{id}")
-    public ResponseEntity updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity<String> updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         Order order = orderService.get(createMealOrderedDTO.orderId);
 
         if (order == null) {
@@ -80,7 +80,7 @@ public class MealOrderedController {
     }
 
     @DeleteMapping(value = "/mealordered/{id}")
-    public ResponseEntity deleteMealOrdered(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteMealOrdered(@PathVariable @Valid Long id) {
         mealOrderedService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

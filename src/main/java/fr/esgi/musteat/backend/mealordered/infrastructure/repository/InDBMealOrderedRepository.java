@@ -34,20 +34,20 @@ public class InDBMealOrderedRepository implements MealOrderedRepository {
 
     @Override
     public boolean update(MealOrdered value) {
-        if (dbRepository.findById(value.getId()).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value.getId()).isPresent()) {
+            dbRepository.save(MealOrderedDB.fromMealOrdered(value));
+            return true;
         }
-        dbRepository.save(MealOrderedDB.fromMealOrdered(value));
-        return true;
+        return false;
     }
 
     @Override
     public boolean remove(Long value) {
-        if (dbRepository.findById(value).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value).isPresent()) {
+            dbRepository.delete(dbRepository.findById(value).get());
+            return true;
         }
-        dbRepository.delete(dbRepository.findById(value).get());
-        return true;
+        return false;
     }
 
     @Override

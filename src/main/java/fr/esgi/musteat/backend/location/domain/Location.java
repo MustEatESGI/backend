@@ -3,6 +3,8 @@ package fr.esgi.musteat.backend.location.domain;
 import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 
+import java.util.Objects;
+
 public class Location extends Entity<Long> {
 
     private final Double latitude;
@@ -43,5 +45,19 @@ public class Location extends Entity<Long> {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Location location = (Location) o;
+        return Objects.equals(latitude, location.latitude) && Objects.equals(longitude, location.longitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), latitude, longitude);
     }
 }

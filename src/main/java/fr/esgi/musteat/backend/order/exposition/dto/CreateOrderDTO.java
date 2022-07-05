@@ -7,6 +7,7 @@ import java.util.List;
 
 public class CreateOrderDTO {
 
+    @NotNull
     public LocalDateTime orderDate = LocalDateTime.now();
     @NotNull
     public Long userId;

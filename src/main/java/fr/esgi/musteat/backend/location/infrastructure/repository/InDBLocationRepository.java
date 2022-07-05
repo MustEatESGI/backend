@@ -33,20 +33,20 @@ public class InDBLocationRepository implements LocationRepository {
 
     @Override
     public boolean update(Location value) {
-        if (dbRepository.findById(value.getId()).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value.getId()).isPresent()) {
+            dbRepository.save(LocationDB.of(value));
+            return true;
         }
-        dbRepository.save(LocationDB.of(value));
-        return true;
+        return false;
     }
 
     @Override
     public boolean remove(Long value) {
-        if (dbRepository.findById(value).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value).isPresent()) {
+            dbRepository.delete(dbRepository.findById(value).get());
+            return true;
         }
-        dbRepository.delete(dbRepository.findById(value).get());
-        return true;
+        return false;
     }
 
     @Override

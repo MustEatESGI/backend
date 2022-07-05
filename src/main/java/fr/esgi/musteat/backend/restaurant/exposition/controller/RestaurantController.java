@@ -56,7 +56,7 @@ public class RestaurantController {
     }
 
     @PostMapping(value = "/restaurant")
-    public ResponseEntity createRestaurant(@RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
+    public ResponseEntity<String> createRestaurant(@RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
         Location location = Location.from(createRestaurantDTO.location);
         locationService.create(location);
 
@@ -66,7 +66,7 @@ public class RestaurantController {
     }
 
     @PutMapping(value = "/restaurant/{id}")
-    public ResponseEntity updateRestaurant(@PathVariable @Valid Long id, @RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
+    public ResponseEntity<String> updateRestaurant(@PathVariable @Valid Long id, @RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
         Restaurant restaurant = restaurantService.get(id);
 
         if (restaurant == null) {
@@ -79,7 +79,7 @@ public class RestaurantController {
     }
 
     @DeleteMapping(value = "/restaurant/{id}")
-    public ResponseEntity deleteRestaurant(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteRestaurant(@PathVariable @Valid Long id) {
         restaurantService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -9,7 +9,7 @@ public abstract class Service<R extends Repository<V, K>, V extends Entity<K>, K
     protected final Validator<V> validator;
     protected final String serviceName;
 
-    public Service(R repository, Validator<V> validator, String serviceName) {
+    protected Service(R repository, Validator<V> validator, String serviceName) {
         this.repository = repository;
         this.validator = validator;
         this.serviceName = serviceName;

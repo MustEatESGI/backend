@@ -4,6 +4,8 @@ import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
 
+import java.util.Objects;
+
 public class User extends Entity<Long> {
 
     private final String name;
@@ -52,5 +54,19 @@ public class User extends Entity<Long> {
                 ", password='" + password + '\'' +
                 ", location=" + location +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(location, user.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, password, location);
     }
 }

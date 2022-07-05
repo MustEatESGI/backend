@@ -4,6 +4,8 @@ import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.meal.exposition.dto.CreateMealDTO;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 
+import java.util.Objects;
+
 public class Meal extends Entity<Long> {
 
     private final String name;
@@ -52,5 +54,19 @@ public class Meal extends Entity<Long> {
                 ", price=" + price +
                 ", restaurant=" + restaurant +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Meal meal = (Meal) o;
+        return Objects.equals(name, meal.name) && Objects.equals(price, meal.price) && Objects.equals(restaurant, meal.restaurant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, price, restaurant);
     }
 }
