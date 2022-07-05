@@ -2,7 +2,7 @@ package fr.esgi.musteat.backend.kernel;
 
 import java.util.Objects;
 
-public abstract class Entity <T>{
+public abstract class Entity<T> {
 
     protected T id;
 

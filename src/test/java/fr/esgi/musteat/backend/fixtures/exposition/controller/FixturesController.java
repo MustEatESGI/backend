@@ -48,12 +48,12 @@ public class FixturesController {
     }
 
     public void resetFixtures() {
-        this.cleanLocationFixtures();
-        this.cleanMealFixtures();
         this.cleanMealOrderedFixtures();
         this.cleanOrderFixtures();
-        this.cleanRestaurantFixtures();
+        this.cleanMealFixtures();
         this.cleanUserFixtures();
+        this.cleanRestaurantFixtures();
+        this.cleanLocationFixtures();
     }
 
     public Location getLocationFixture() {
