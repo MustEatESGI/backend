@@ -1,5 +1,6 @@
 package fr.esgi.musteat.backend.order.exposition.controller;
 
+import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
 import fr.esgi.musteat.backend.order.exposition.dto.CreateOrderDTO;
 import fr.esgi.musteat.backend.order.exposition.dto.OrderDTO;
@@ -20,17 +21,18 @@ import org.springframework.test.context.event.annotation.AfterTestClass;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class OrderControllerTest {
+public class OrderControllerTest extends ApiTestBase {
 
     @LocalServerPort
     private int port;
+
+    private String jwt;
 
     @Autowired
     private FixturesController fixturesController;
@@ -39,6 +41,8 @@ public class OrderControllerTest {
     void setup() {
         RestAssured.port = port;
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+
+        this.jwt = this.getToken(fixturesController.getUserFixture().getName(), fixturesController.getUserFixture().getPassword());
     }
 
     @AfterTestClass
@@ -55,6 +59,7 @@ public class OrderControllerTest {
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
                 .when()
@@ -66,7 +71,9 @@ public class OrderControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var orderDTO = when()
+        var orderDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -86,6 +93,7 @@ public class OrderControllerTest {
         createOrderDTO.restaurantId = this.fixturesController.getRestaurantFixtures().getId();
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
                 .when()
@@ -102,6 +110,7 @@ public class OrderControllerTest {
         createOrderDTO.restaurantId = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
                 .when()
@@ -113,7 +122,9 @@ public class OrderControllerTest {
     @Test
     @Order(3)
     void should_retrieve_bootstrapped_orders() {
-        var orderDTOs = when()
+        var orderDTOs = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get("/orders")
         .then()
                 .statusCode(200)
@@ -126,7 +137,9 @@ public class OrderControllerTest {
     @Test
     @Order(4)
     void should_retrieve_single_order() {
-        var orderDTO = when()
+        var orderDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get("/order/" + this.fixturesController.getOrderFixture().getId())
         .then()
                 .statusCode(200)
@@ -145,6 +158,7 @@ public class OrderControllerTest {
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
         .when()
@@ -156,7 +170,9 @@ public class OrderControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var orderDTO = when()
+        var orderDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get(location)
         .then()
                 .statusCode(200)
@@ -175,6 +191,7 @@ public class OrderControllerTest {
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
         .when()
@@ -193,6 +210,7 @@ public class OrderControllerTest {
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
         .when()
@@ -204,7 +222,9 @@ public class OrderControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var orderDTO = when()
+        var orderDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -223,6 +243,7 @@ public class OrderControllerTest {
         createOrderDTO.restaurantId = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
         .when()

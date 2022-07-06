@@ -51,7 +51,10 @@ public class SearchControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .get("/search/"+mealName.toLowerCase()+"/price")
                 .then()
-                .extract().body().jsonPath().getList("", MealSearchedDTO.class);
+                .extract()
+                .body()
+                .jsonPath()
+                .getList("", MealSearchedDTO.class);
 
         assertThat(meals).isNotEmpty();
         assertThat(meals.size()).isEqualTo(1);

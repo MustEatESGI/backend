@@ -1,5 +1,6 @@
 package fr.esgi.musteat.backend.mealordered.exposition.controller;
 
+import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
 import fr.esgi.musteat.backend.mealordered.exposition.dto.CreateMealOrderedDTO;
 import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
@@ -16,17 +17,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MealOrderedControllerTest {
+public class MealOrderedControllerTest extends ApiTestBase {
 
     @LocalServerPort
     private int port;
+
+    private String jwt;
 
     @Autowired
     private FixturesController fixturesController;
@@ -35,6 +37,8 @@ public class MealOrderedControllerTest {
     void setup() {
         RestAssured.port = port;
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+
+        this.jwt = this.getToken(fixturesController.getUserFixture().getName(), fixturesController.getUserFixture().getPassword());
     }
 
     @AfterTestClass
@@ -51,6 +55,7 @@ public class MealOrderedControllerTest {
         createMealOrderedDTO.price = 10L;
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
         .when()
@@ -62,7 +67,9 @@ public class MealOrderedControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO = when()
+        var mealOrderedDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get(location)
         .then()
                 .statusCode(200)
@@ -83,6 +90,7 @@ public class MealOrderedControllerTest {
         createMealOrderedDTO.price = 10L;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
         .when()
@@ -100,6 +108,7 @@ public class MealOrderedControllerTest {
         createMealOrderedDTO.price = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
         .when()
@@ -117,6 +126,7 @@ public class MealOrderedControllerTest {
         createMealOrderedDTO.price = 10L;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
         .when()
@@ -128,7 +138,9 @@ public class MealOrderedControllerTest {
     @Test
     @Order(5)
     void should_retrieve_bootstrapped_ordered_meals() {
-        var mealOrderedDTOs = when()
+        var mealOrderedDTOs = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get("/mealordered")
         .then()
                 .statusCode(200)
@@ -141,7 +153,9 @@ public class MealOrderedControllerTest {
     @Test
     @Order(6)
     void should_retrieve_single_ordered_meal() {
-        var mealOrderedDTO = when()
+        var mealOrderedDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
         .then()
                 .statusCode(200)
@@ -160,6 +174,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -171,7 +186,9 @@ public class MealOrderedControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO = when()
+        var mealOrderedDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get(location)
         .then()
                 .statusCode(200)
@@ -188,6 +205,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.name = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -205,6 +223,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -216,7 +235,9 @@ public class MealOrderedControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO = when()
+        var mealOrderedDTO = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get(location)
         .then()
                 .statusCode(200)
@@ -233,6 +254,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.price = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -251,6 +273,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
 
         var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -262,7 +285,9 @@ public class MealOrderedControllerTest {
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO = when()
+        var mealOrderedDTO =given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get(location)
         .then()
                 .statusCode(200)
@@ -279,6 +304,7 @@ public class MealOrderedControllerTest {
         updateMealOrderedDTO.orderDTO = null;
 
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
         .when()
@@ -291,13 +317,16 @@ public class MealOrderedControllerTest {
     @Order(13)
     void should_delete_meal_ordered() {
         given()
+                .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
         .when()
                 .delete("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
         .then()
                 .statusCode(200);
 
-        when()
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+        .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
         .then()
                 .statusCode(404);

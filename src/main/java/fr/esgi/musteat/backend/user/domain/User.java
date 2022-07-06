@@ -5,9 +5,8 @@ import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.user.exposition.dto.CreateUserDTO;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
+import java.util.Objects;
 
 public class User extends Entity<Long> {
 

@@ -4,7 +4,6 @@ import fr.esgi.musteat.backend.kernel.Entity;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.mealordered.exposition.dto.CreateMealOrderedDTO;
 import fr.esgi.musteat.backend.order.domain.Order;
-import org.aspectj.weaver.ast.Or;
 
 import java.util.Objects;
 

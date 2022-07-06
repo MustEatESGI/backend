@@ -2,12 +2,10 @@ package fr.esgi.musteat.backend.location.exposition.controller;
 
 import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
-import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
-import fr.esgi.musteat.backend.mealordered.exposition.dto.MealOrderedDTO;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -22,7 +20,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

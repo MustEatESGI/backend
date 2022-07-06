@@ -6,7 +6,6 @@ import fr.esgi.musteat.backend.meal.exposition.dto.MealDetailsDTO;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

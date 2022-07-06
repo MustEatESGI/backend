@@ -11,7 +11,6 @@ public class LocationDTO {
     public Long id;
     @NotNull
     public Double latitude;
-
     @NotNull
     public Double longitude;
 

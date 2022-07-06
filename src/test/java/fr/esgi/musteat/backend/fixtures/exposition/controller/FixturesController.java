@@ -1,6 +1,7 @@
 package fr.esgi.musteat.backend.fixtures.exposition.controller;
 
 import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
@@ -61,6 +62,12 @@ public class FixturesController {
             this.addLocationFixture();
         }
         return this.locationFixture;
+    }
+
+    public Location getLocationFixtureFromAddress(String address) {
+        CreateLocationDTO createLocationDTO = new CreateLocationDTO();
+        createLocationDTO.address = address;
+        return Location.from(locationService.getLocationFromAddress(createLocationDTO));
     }
 
     public Meal getMealFixture() {
