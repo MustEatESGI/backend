@@ -5,6 +5,7 @@ import fr.esgi.musteat.backend.user.domain.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class UserDTO {
 
@@ -24,5 +25,27 @@ public class UserDTO {
 
     public static UserDTO from(User user) {
         return new UserDTO(user.getId(), user.getName(), LocationDTO.from(user.getLocation()));
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", location=" + location +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(name, userDTO.name) && Objects.equals(location, userDTO.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, location);
     }
 }

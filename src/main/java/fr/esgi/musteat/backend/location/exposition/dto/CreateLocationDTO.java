@@ -4,7 +4,5 @@ import javax.validation.constraints.NotNull;
 
 public class CreateLocationDTO {
     @NotNull
-    public Double latitude;
-    @NotNull
-    public Double longitude;
+    public String address;
 }

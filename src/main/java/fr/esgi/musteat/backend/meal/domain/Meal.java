@@ -1,8 +1,11 @@
 package fr.esgi.musteat.backend.meal.domain;
 
 import fr.esgi.musteat.backend.kernel.Entity;
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.meal.exposition.dto.CreateMealDTO;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
+
+import java.util.Objects;
 
 public class Meal extends Entity<Long> {
 
@@ -28,8 +31,8 @@ public class Meal extends Entity<Long> {
         return new Meal(createMealDTO.name, createMealDTO.price, restaurant);
     }
 
-    public static Meal update(Meal meal, CreateMealDTO createMealDTO) {
-        return new Meal(meal.getId(), createMealDTO.name, createMealDTO.price, meal.getRestaurant());
+    public static Meal update(Meal meal, CreateMealDTO createMealDTO, Restaurant restaurant) {
+        return new Meal(meal.getId(), createMealDTO.name, createMealDTO.price, restaurant);
     }
 
     public String getName() {
@@ -38,6 +41,10 @@ public class Meal extends Entity<Long> {
 
     public Long getPrice() {
         return price;
+    }
+
+    public Long getDistance(Location userLocation) {
+        return restaurant.getLocation().getDistance(userLocation);
     }
 
     public Restaurant getRestaurant() {
@@ -52,5 +59,19 @@ public class Meal extends Entity<Long> {
                 ", price=" + price +
                 ", restaurant=" + restaurant +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Meal meal = (Meal) o;
+        return Objects.equals(name, meal.name) && Objects.equals(price, meal.price) && Objects.equals(restaurant, meal.restaurant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, price, restaurant);
     }
 }

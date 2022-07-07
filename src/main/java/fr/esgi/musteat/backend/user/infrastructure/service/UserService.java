@@ -53,6 +53,13 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     @Override
     public void create(User entity) {
         User user = new User(entity.getName(), passwordEncoder.encode(entity.getPassword()), entity.getLocation());
-        super.create(user);
+        validator.validate(user);
+
+        if (user.getId() != null && repository.get(user.getId()).isPresent()) {
+            throw new IllegalArgumentException(String.format("%s with id %s already exists", serviceName, user.getId()));
+        }
+
+        repository.add(user);
+        entity.setId(user.getId());
     }
 }

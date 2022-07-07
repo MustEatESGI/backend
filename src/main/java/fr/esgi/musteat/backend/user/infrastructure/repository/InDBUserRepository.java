@@ -34,20 +34,20 @@ public class InDBUserRepository implements UserRepository {
 
     @Override
     public boolean update(User value) {
-        if (dbRepository.findById(value.getId()).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value.getId()).isPresent()) {
+            dbRepository.save(UserDB.fromUser(value));
+            return true;
         }
-        dbRepository.save(UserDB.fromUser(value));
-        return true;
+        return false;
     }
 
     @Override
     public boolean remove(Long value) {
-        if (dbRepository.findById(value).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value).isPresent()) {
+            dbRepository.delete(dbRepository.findById(value).get());
+            return true;
         }
-        dbRepository.delete(dbRepository.findById(value).get());
-        return true;
+        return false;
     }
 
     @Override

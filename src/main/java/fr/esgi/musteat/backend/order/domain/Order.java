@@ -6,6 +6,7 @@ import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.user.domain.User;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Order extends Entity<Long> {
 
@@ -55,5 +56,19 @@ public class Order extends Entity<Long> {
                 ", user=" + user +
                 ", restaurant=" + restaurant +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Order order = (Order) o;
+        return Objects.equals(orderDate, order.orderDate) && Objects.equals(user, order.user) && Objects.equals(restaurant, order.restaurant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), orderDate, user, restaurant);
     }
 }

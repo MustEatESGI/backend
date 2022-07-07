@@ -34,20 +34,20 @@ public class InDBOrderRepository implements OrderRepository {
 
     @Override
     public boolean update(Order value) {
-        if (dbRepository.findById(value.getId()).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value.getId()).isPresent()) {
+            dbRepository.save(OrderDB.fromOrder(value));
+            return true;
         }
-        dbRepository.save(OrderDB.fromOrder(value));
-        return true;
+        return false;
     }
 
     @Override
     public boolean remove(Long value) {
-        if (dbRepository.findById(value).isEmpty()) {
-            return false;
+        if (dbRepository.findById(value).isPresent()) {
+            dbRepository.delete(dbRepository.findById(value).get());
+            return true;
         }
-        dbRepository.delete(dbRepository.findById(value).get());
-        return true;
+        return false;
     }
 
     @Override

@@ -38,27 +38,49 @@ public class MealController {
 
     @GetMapping(value = "/meal/{id}")
     public ResponseEntity<MealDetailsDTO> getMeal(@PathVariable @Valid Long id) {
+        Meal meal = mealService.get(id);
+
+        if (meal == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(MealDetailsDTO.from(mealService.get(id)));
+                .body(MealDetailsDTO.from(meal));
     }
 
     @PostMapping(value = "/meal")
-    public ResponseEntity createMeal(@RequestBody @Valid CreateMealDTO createMealDTO) {
+    public ResponseEntity<String> createMeal(@RequestBody @Valid CreateMealDTO createMealDTO) {
         Restaurant restaurant = restaurantService.get(createMealDTO.restaurantId);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+
         Meal meal = Meal.from(createMealDTO, restaurant);
         mealService.create(meal);
         return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId())).toUri()).build();
     }
 
     @PutMapping(value = "/meal/{id}")
-    public ResponseEntity updateMeal(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealDTO createMealDTO) {
+    public ResponseEntity<String> updateMeal(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealDTO createMealDTO) {
+        Restaurant restaurant = restaurantService.get(createMealDTO.restaurantId);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+
         Meal meal = mealService.get(id);
-        mealService.update(Meal.update(meal, createMealDTO));
-        return ResponseEntity.ok(linkTo(methodOn(MealController.class).getMeal(meal.getId())).toUri());
+
+        if (meal == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meal not found");
+        }
+
+        mealService.update(Meal.update(meal, createMealDTO, restaurant));
+        return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/meal/{id}")
-    public ResponseEntity deleteMeal(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteMeal(@PathVariable @Valid Long id) {
         mealService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

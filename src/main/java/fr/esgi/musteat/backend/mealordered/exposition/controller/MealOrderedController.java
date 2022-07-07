@@ -38,27 +38,49 @@ public class MealOrderedController {
 
     @GetMapping(value = "/mealordered/{id}")
     public ResponseEntity<MealOrderedDTO> getMealOrdered(@PathVariable @Valid Long id) {
+        MealOrdered mealOrdered = mealOrderedService.get(id);
+
+        if (mealOrdered == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(MealOrderedDTO.from(mealOrderedService.get(id)));
+                .body(MealOrderedDTO.from(mealOrdered));
     }
 
     @PostMapping(value = "/mealordered")
-    public ResponseEntity createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity<String> createMealOrdered(@RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
         Order order = orderService.get(createMealOrderedDTO.orderId);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
         MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
         mealOrderedService.create(mealOrdered);
         return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
     }
 
     @PutMapping(value = "/mealordered/{id}")
-    public ResponseEntity updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+    public ResponseEntity<String> updateMealOrdered(@PathVariable @Valid Long id, @RequestBody @Valid CreateMealOrderedDTO createMealOrderedDTO) {
+        Order order = orderService.get(createMealOrderedDTO.orderId);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
         MealOrdered mealOrdered = mealOrderedService.get(id);
-        mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO));
-        return ResponseEntity.ok(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri());
+
+        if (mealOrdered == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("MealOrdered not found");
+        }
+
+        mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO, order));
+        return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
     }
 
     @DeleteMapping(value = "/mealordered/{id}")
-    public ResponseEntity deleteMealOrdered(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteMealOrdered(@PathVariable @Valid Long id) {
         mealOrderedService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
