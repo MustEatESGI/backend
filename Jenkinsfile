@@ -85,7 +85,7 @@ pipeline {
         }
         stage('Build Dockerfile and push to gcloud') {
             when {
-                branch 'master'
+                branch 'main'
             }
             steps {
                 script {
@@ -103,7 +103,7 @@ pipeline {
         }
         stage('Delete docker local image') {
             when {
-                branch 'master'
+                branch 'main'
             }
             steps {
                 script {
