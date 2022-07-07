@@ -49,7 +49,7 @@ public class SearchController {
                 return meals.stream().sorted(Comparator.comparing(Meal::getPrice)).collect(Collectors.toList());
             case Distance:
                 return meals.stream().sorted(Comparator.comparing(meal -> meal.getDistance(userLocation))).collect(Collectors.toList());
-            case Both:
+            case Ratio:
                 return meals.stream().sorted(Comparator.comparing(Meal::getPrice).thenComparing(meal -> meal.getDistance(userLocation))).collect(Collectors.toList());
             default:
                 return meals;

@@ -57,7 +57,7 @@ public class UserController {
 
         User user = User.from(createUserDTO, location);
         userService.create(user);
-        return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).build();
+        return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).body(user.getId().toString());
     }
 
     @PutMapping(value = "/user/{id}")

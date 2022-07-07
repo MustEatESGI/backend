@@ -16,11 +16,14 @@ public class RestaurantDTO {
     public String name;
     @NotNull
     public LocationDTO location;
+    @NotNull
+    public String imageUrl;
 
     public RestaurantDTO(Long id, String name, LocationDTO location) {
         this.id = id;
         this.name = name;
         this.location = location;
+        this.imageUrl = "http://source.unsplash.com/random?" + name;
     }
 
     public static RestaurantDTO from(Restaurant restaurant) {
