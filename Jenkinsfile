@@ -21,9 +21,12 @@ pipeline {
             }
             steps {
                 script {
-                    def mvn = tool 'maven-3.8.4';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=MustEatESGI_backend -Dsonar.branch.name=${env.BRANCH_NAME}"
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                        writeFile file: 'application.properties', text: readFile(FILE)
+                        def mvn = tool 'maven-3.8.4';
+                        withSonarQubeEnv() {
+                            sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=MustEatESGI_backend -Dsonar.branch.name=${env.BRANCH_NAME}"
+                        }
                     }
                 }
             }
@@ -34,12 +37,15 @@ pipeline {
             }
             steps {
                 script {
-                    def mvn = tool 'maven-3.8.4';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=MustEatESGI_backend\
-                                                -Dsonar.pullrequest.key=${env.CHANGE_ID} \
-                                                -Dsonar.pullrequest.base=${env.CHANGE_TARGET} \
-                                                -Dsonar.pullrequest.branch=${env.CHANGE_BRANCH}"
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                        writeFile file: 'application.properties', text: readFile(FILE)
+                        def mvn = tool 'maven-3.8.4';
+                        withSonarQubeEnv() {
+                            sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=MustEatESGI_backend\
+                                                    -Dsonar.pullrequest.key=${env.CHANGE_ID} \
+                                                    -Dsonar.pullrequest.base=${env.CHANGE_TARGET} \
+                                                    -Dsonar.pullrequest.branch=${env.CHANGE_BRANCH}"
+                        }
                     }
                 }
             }
