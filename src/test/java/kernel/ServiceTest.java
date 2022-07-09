@@ -10,15 +10,16 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K>, K> {
 
-    private R repository;
-    private Service<R, V, K> service;
+    protected R repository;
+    protected Service<R, V, K> service;
 
-    private final V value;
-    private final V updatedValue;
+    protected final V value;
+    protected final V updatedValue;
 
     public ServiceTest(V value, V updatedValue) {
         this.value = value;
@@ -49,19 +50,18 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
 
     @Test
     void should_get_object_from_repository() {
-        service.create(value);
+        repository.add(value);
         assertThat(service.get(value.getId())).isEqualTo(value);
     }
 
     @Test
     void should_be_null_when_getting_non_existing_object() {
-        value.setId(updatedValue.getId());
         assertThat(service.get(value.getId())).isEqualTo(null);
     }
 
     @Test
     void should_update_value() {
-        service.create(value);
+        repository.add(value);
         service.update(updatedValue);
         assertThat(repository.get(value.getId()).get()).isEqualTo(updatedValue);
     }
@@ -73,13 +73,13 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
 
     @Test
     void should_delete_object() {
-        service.create(value);
+        repository.add(value);
         service.delete(value.getId());
         assertThat(repository.get(value.getId())).isEqualTo(Optional.empty());
     }
 
     @Test
-void should_throw_exception_when_deleting_non_existing_object() {
+    void should_throw_exception_when_deleting_non_existing_object() {
         assertThatThrownBy(() -> service.delete(value.getId())).isInstanceOf(EntityNotFoundException.class);
     }
 }
