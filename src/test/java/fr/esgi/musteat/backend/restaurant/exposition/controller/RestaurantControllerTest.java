@@ -1,4 +1,4 @@
-package fr.esgi.musteat.backend.restaurant.controller;
+package fr.esgi.musteat.backend.restaurant.exposition.controller;
 
 import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
