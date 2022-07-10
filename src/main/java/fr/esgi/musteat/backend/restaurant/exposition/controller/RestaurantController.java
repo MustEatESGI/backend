@@ -11,10 +11,14 @@ import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDetailsDTO;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
+import fr.esgi.musteat.backend.security.JWTService;
+import fr.esgi.musteat.backend.user.infrastructure.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,17 +41,22 @@ public class RestaurantController {
 
     private final OrderService orderService;
 
-    public RestaurantController(RestaurantService restaurantService, LocationService locationService, MealService mealService, OrderService orderService) {
+    private final UserService userService;
+
+    public RestaurantController(RestaurantService restaurantService, LocationService locationService, MealService mealService, OrderService orderService, UserService userService) {
         this.restaurantService = restaurantService;
         this.locationService = locationService;
         this.mealService = mealService;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/restaurants")
-    public ResponseEntity<List<RestaurantDTO>> getRestaurants() {
+    public ResponseEntity<List<RestaurantDTO>> getRestaurants(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(restaurantService.getAll().stream().map(RestaurantDTO::from).collect(Collectors.toList()));
+                .body(restaurantService.getAll().stream().map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/restaurant/{id}")
@@ -95,12 +104,14 @@ public class RestaurantController {
     }
 
     @GetMapping(value = "/restaurants/trending")
-    public ResponseEntity<List<RestaurantDTO>> getTrendsRestaurant() {
+    public ResponseEntity<List<RestaurantDTO>> getTrendsRestaurant(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
         Map<Restaurant, Long> restaurants = new HashMap<>();
         restaurantService.getAll().forEach(restaurant -> restaurants.put(restaurant, orderService.getNumberOfOrdersForRestaurant(restaurant)));
         List<Restaurant> trendyRestaurants = new ArrayList<>(restaurants.keySet());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(trendyRestaurants.stream().limit(5).map(RestaurantDTO::from).collect(Collectors.toList()));
+                .body(trendyRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
     }
 }
