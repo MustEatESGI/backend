@@ -35,7 +35,7 @@ public class RestaurantDTO {
     }
 
     public static RestaurantDTO from(Restaurant restaurant) {
-        return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()), null);
+        return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()), 0L);
     }
 
     @Override

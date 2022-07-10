@@ -38,7 +38,7 @@ public class MealDetailsDTO {
     }
 
     public static MealDetailsDTO from(Meal meal) {
-        return new MealDetailsDTO(meal.getId(), meal.getName(), meal.getPrice(), null, meal.getRestaurant().getId());
+        return new MealDetailsDTO(meal.getId(), meal.getName(), meal.getPrice(), 0L, meal.getRestaurant().getId());
     }
 
     @Override
