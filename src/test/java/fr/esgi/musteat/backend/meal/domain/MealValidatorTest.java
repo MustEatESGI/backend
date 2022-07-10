@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class MealValidatorTest {
+class MealValidatorTest {
 
     private static MealValidator mealValidator;
     private static String name;

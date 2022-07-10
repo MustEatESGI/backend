@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class LocationValidatorTest {
+class LocationValidatorTest {
 
     private static LocationValidator locationValidator;
     private static Double latitude;

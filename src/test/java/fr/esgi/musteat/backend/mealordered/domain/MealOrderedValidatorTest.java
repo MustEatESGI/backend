@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class MealOrderedValidatorTest {
+class MealOrderedValidatorTest {
 
     private static MealOrderedValidator mealOrderedValidator;
     private static String name;

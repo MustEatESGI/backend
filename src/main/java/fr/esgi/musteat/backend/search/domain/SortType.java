@@ -1,9 +1,9 @@
 package fr.esgi.musteat.backend.search.domain;
 
 public enum SortType {
-    Distance("distance"),
-    Price("price"),
-    Ratio("ratio");
+    DISTANCE("distance"),
+    PRICE("price"),
+    RATIO("ratio");
 
     private final String text;
 
@@ -13,7 +13,7 @@ public enum SortType {
 
     public static SortType fromString(String text) {
         if(text.equals("")){
-            return SortType.Ratio;
+            return SortType.RATIO;
         }
         for (SortType sortType : SortType.values()) {
             if (sortType.text.equalsIgnoreCase(text)) {

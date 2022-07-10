@@ -53,7 +53,7 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
 
     @Test
     void should_be_null_when_getting_non_existing_object() {
-        assertThat(service.get(value.getId())).isEqualTo(null);
+        assertThat(service.get(value.getId())).isNull();
     }
 
     @Test
@@ -72,7 +72,7 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
     void should_delete_object() {
         repository.add(value);
         service.delete(value.getId());
-        assertThat(repository.get(value.getId())).isEqualTo(Optional.empty());
+        assertThat(repository.get(value.getId())).isNotPresent();
     }
 
     @Test

@@ -27,7 +27,7 @@ public class LocationService extends Service<LocationRepository, Location, Long>
     }
 
     public AddressCodingDTO getLocationFromAddress(CreateLocationDTO createLocationDTO) {
-        final String uri = "http://api.positionstack.com/v1/forward?access_key=" + positionStackApiKey + "&query=" + createLocationDTO.address.replaceAll(" ", "+") + "&country=fr";
+        final String uri = "http://api.positionstack.com/v1/forward?access_key=" + positionStackApiKey + "&query=" + createLocationDTO.address.replace(" ", "+") + "&country=fr";
 
         RestTemplate restTemplate = new RestTemplate();
         // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
