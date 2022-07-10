@@ -2,11 +2,11 @@ package fr.esgi.musteat.backend.location.infrastructure.service;
 
 import fr.esgi.musteat.backend.kernel.Repository;
 import fr.esgi.musteat.backend.kernel.Service;
+import fr.esgi.musteat.backend.kernel.ServiceTest;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.domain.LocationRepository;
 import fr.esgi.musteat.backend.location.domain.LocationValidator;
 import fr.esgi.musteat.backend.location.infrastructure.repository.InMemoryLocationRepositoryTest;
-import kernel.ServiceTest;
 
 public class LocationServiceTest extends ServiceTest<LocationRepository, Location, Long> {
 

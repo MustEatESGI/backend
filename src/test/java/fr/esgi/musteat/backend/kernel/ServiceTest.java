@@ -1,8 +1,5 @@
-package kernel;
+package fr.esgi.musteat.backend.kernel;
 
-import fr.esgi.musteat.backend.kernel.Entity;
-import fr.esgi.musteat.backend.kernel.Repository;
-import fr.esgi.musteat.backend.kernel.Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

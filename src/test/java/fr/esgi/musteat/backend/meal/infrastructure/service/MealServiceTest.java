@@ -2,13 +2,13 @@ package fr.esgi.musteat.backend.meal.infrastructure.service;
 
 import fr.esgi.musteat.backend.kernel.Repository;
 import fr.esgi.musteat.backend.kernel.Service;
+import fr.esgi.musteat.backend.kernel.ServiceTest;
 import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.domain.MealRepository;
 import fr.esgi.musteat.backend.meal.domain.MealValidator;
 import fr.esgi.musteat.backend.meal.infrastructure.repository.InMemoryMealRepositoryTest;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
-import kernel.ServiceTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
