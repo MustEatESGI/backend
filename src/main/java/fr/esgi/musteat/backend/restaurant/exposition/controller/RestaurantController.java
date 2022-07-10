@@ -108,10 +108,23 @@ public class RestaurantController {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
         Map<Restaurant, Long> restaurants = new HashMap<>();
-        restaurantService.getAll().forEach(restaurant -> restaurants.put(restaurant, orderService.getNumberOfOrdersForRestaurant(restaurant)));
-        List<Restaurant> trendyRestaurants = new ArrayList<>(restaurants.keySet());
+
+        orderService.getAll().stream()
+                .filter(order -> order.getOrderDate().isAfter(order.getOrderDate().minusDays(7)))
+                .forEach(order -> {
+                    if (restaurants.containsKey(order.getRestaurant())) {
+                        restaurants.put(order.getRestaurant(), restaurants.get(order.getRestaurant()) + 1);
+                    } else {
+                        restaurants.put(order.getRestaurant(), 1L);
+                    }
+                });
+
+        List<Restaurant> sortedRestaurants = restaurants.entrySet().stream()
+                .sorted(Map.Entry.<Restaurant, Long>comparingByValue().reversed())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(trendyRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
+                .body(sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
     }
 }
