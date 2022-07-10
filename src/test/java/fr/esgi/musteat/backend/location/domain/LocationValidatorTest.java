@@ -37,8 +37,32 @@ public class LocationValidatorTest {
     }
 
     @Test
+    void should_be_invalid_when_latitude_above_range() {
+        Location location = new Location(91.0, longitude);
+        assertThatThrownBy(() -> locationValidator.validate(location)).isInstanceOf(IllegalArgumentException.class).hasMessage("Location latitude is out of range");
+    }
+
+    @Test
+    void should_be_invalid_when_latitude_below_range() {
+        Location location = new Location(-91.0, longitude);
+        assertThatThrownBy(() -> locationValidator.validate(location)).isInstanceOf(IllegalArgumentException.class).hasMessage("Location latitude is out of range");
+    }
+
+    @Test
     void should_be_invalid_when_longitude_is_null() {
         Location location = new Location(latitude, null);
         assertThatThrownBy(() -> locationValidator.validate(location)).isInstanceOf(IllegalArgumentException.class).hasMessage("Location longitude is null");
+    }
+
+    @Test
+    void should_be_invalid_when_longitude_above_range() {
+        Location location = new Location(latitude, 181.0);
+        assertThatThrownBy(() -> locationValidator.validate(location)).isInstanceOf(IllegalArgumentException.class).hasMessage("Location longitude is out of range");
+    }
+
+    @Test
+    void should_be_invalid_when_longitude_below_range() {
+        Location location = new Location(latitude, -181.0);
+        assertThatThrownBy(() -> locationValidator.validate(location)).isInstanceOf(IllegalArgumentException.class).hasMessage("Location longitude is out of range");
     }
 }

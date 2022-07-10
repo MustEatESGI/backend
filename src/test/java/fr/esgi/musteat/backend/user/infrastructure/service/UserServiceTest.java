@@ -3,6 +3,7 @@ package fr.esgi.musteat.backend.user.infrastructure.service;
 import fr.esgi.musteat.backend.kernel.Repository;
 import fr.esgi.musteat.backend.kernel.Service;
 import fr.esgi.musteat.backend.kernel.ServiceTest;
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.user.domain.User;
 import fr.esgi.musteat.backend.user.domain.UserRepository;
 import fr.esgi.musteat.backend.user.domain.UserValidator;
@@ -24,7 +25,11 @@ public class UserServiceTest extends ServiceTest<UserRepository, User, Long> {
     };
 
     public UserServiceTest() {
-        super(new User(0L, "user", "password", null), new User(0L, "new name", "new password", null));
+        super(
+                new User(0L, "user", "Password1",
+                        new Location(10.0, 10.0)),
+                new User(0L, "new name", "Password2",
+                        new Location(10.0, 10.0)));
     }
 
     @Override
