@@ -27,7 +27,7 @@ public class BackendConfiguration {
 
     @Bean
     public Validator<User> getUserValidator() {
-        return new UserValidator((LocationValidator) getLocationValidator());
+        return new UserValidator();
     }
 
     @Bean

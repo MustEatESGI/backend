@@ -5,12 +5,6 @@ import fr.esgi.musteat.backend.location.domain.LocationValidator;
 
 public class UserValidator implements Validator<User> {
 
-    private final LocationValidator locationValidator;
-
-    public UserValidator(LocationValidator locationValidator) {
-        this.locationValidator = locationValidator;
-    }
-
     @Override
     public void validate(User user) {
         if (user == null) {
@@ -21,6 +15,8 @@ public class UserValidator implements Validator<User> {
             throw new IllegalArgumentException("User name is null or empty");
         }
 
-
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("User password is null or empty");
+        }
     }
 }
