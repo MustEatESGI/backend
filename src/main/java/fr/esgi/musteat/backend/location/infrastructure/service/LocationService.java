@@ -35,4 +35,22 @@ public class LocationService extends Service<LocationRepository, Location, Long>
 
         return new AddressCodingDTO(Double.parseDouble(coordinates.get("latitude").toString()), Double.parseDouble(coordinates.get("longitude").toString()));
     }
+
+    public String getTimeBetweenTwoLocations(Location firstLocation, Location secondLocation) {
+        final String uri = "https://maps.googleapis.com/maps/api/distancematrix/json?key=" + googleMapsStackApiKey +
+                "&origins=" + firstLocation.getLatitude() + "," + firstLocation.getLongitude() +
+                "&destinations=" + secondLocation.getLatitude() + "," + secondLocation.getLongitude();
+
+        RestTemplate restTemplate = new RestTemplate();
+        // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
+
+        // TODO : Améliorer le parsing (c'est immonde)
+        ArrayList jsonObject = (ArrayList) restTemplate.getForObject(uri, JSONObject.class).get("rows");
+        LinkedHashMap<String, Object> jsonObject2 = (LinkedHashMap<String, Object>) jsonObject.get(0);
+        ArrayList<Object> jsonObject3 = (ArrayList<Object>) jsonObject2.get("elements");
+        LinkedHashMap<String, Object> jsonObject4 = (LinkedHashMap<String, Object>) jsonObject3.get(0);
+        LinkedHashMap<String, Object> jsonObject5 = (LinkedHashMap<String, Object>) jsonObject4.get("duration");
+
+        return (String) jsonObject5.get("text");
+    }
 }
