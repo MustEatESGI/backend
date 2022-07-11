@@ -36,7 +36,7 @@ public class LocationService extends Service<LocationRepository, Location, Long>
         return new AddressCodingDTO(Double.parseDouble(coordinates.get("latitude").toString()), Double.parseDouble(coordinates.get("longitude").toString()));
     }
 
-    public String getTimeBetweenTwoLocations(Location firstLocation, Location secondLocation) {
+    public Long getTimeBetweenTwoLocations(Location firstLocation, Location secondLocation) {
         final String uri = "https://maps.googleapis.com/maps/api/distancematrix/json?key=" + googleMapsStackApiKey +
                 "&origins=" + firstLocation.getLatitude() + "," + firstLocation.getLongitude() +
                 "&destinations=" + secondLocation.getLatitude() + "," + secondLocation.getLongitude();
@@ -51,6 +51,6 @@ public class LocationService extends Service<LocationRepository, Location, Long>
         LinkedHashMap<String, Object> jsonObject4 = (LinkedHashMap<String, Object>) jsonObject3.get(0);
         LinkedHashMap<String, Object> jsonObject5 = (LinkedHashMap<String, Object>) jsonObject4.get("duration");
 
-        return (String) jsonObject5.get("text");
+        return Math.round(Double.parseDouble(jsonObject5.get("value").toString()) / 60);
     }
 }
