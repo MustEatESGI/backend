@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class LocationController {
     }
 
     @PostMapping(value = "/location")
-    public ResponseEntity createLocation(@RequestBody @Valid CreateLocationDTO createLocationDTO) {
+    public ResponseEntity<String> createLocation(@RequestBody @Valid CreateLocationDTO createLocationDTO) {
         AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
         Location location = Location.from(addressCodingDTO);
         locationService.create(location);
@@ -47,7 +48,7 @@ public class LocationController {
     }
 
     @PutMapping(value = "/location/{id}")
-    public ResponseEntity updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid  CreateLocationDTO createLocationDTO) {
+    public ResponseEntity<URI> updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid  CreateLocationDTO createLocationDTO) {
         Location location = locationService.get(id);
         AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
         locationService.update(Location.update(location, addressCodingDTO));
@@ -55,7 +56,7 @@ public class LocationController {
     }
 
     @DeleteMapping(value = "/location/{id}")
-    public ResponseEntity deleteLocation(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteLocation(@PathVariable @Valid Long id) {
         locationService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

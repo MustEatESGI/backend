@@ -15,19 +15,26 @@ public class OrderDTO {
     @NotNull
     public LocalDateTime orderDate;
     @NotNull
+    public Long deliveryTime;
+    @NotNull
     public UserDTO user;
     @NotNull
     public RestaurantDTO restaurant;
 
-    public OrderDTO(Long id, LocalDateTime orderDate, UserDTO user, RestaurantDTO restaurant) {
+    public OrderDTO(Long id, LocalDateTime orderDate, Long deliveryTime, UserDTO user, RestaurantDTO restaurant) {
         this.id = id;
         this.orderDate = orderDate;
+        this.deliveryTime = deliveryTime;
         this.user = user;
         this.restaurant = restaurant;
     }
 
+    public static OrderDTO from(Order order, Long deliveryTime) {
+        return new OrderDTO(order.getId(), order.getOrderDate(), deliveryTime, UserDTO.from(order.getUser()), RestaurantDTO.from(order.getRestaurant()));
+    }
+
     public static OrderDTO from(Order order) {
-        return new OrderDTO(order.getId(), order.getOrderDate(), UserDTO.from(order.getUser()), RestaurantDTO.from(order.getRestaurant()));
+        return new OrderDTO(order.getId(), order.getOrderDate(), 0L, UserDTO.from(order.getUser()), RestaurantDTO.from(order.getRestaurant()));
     }
 
     @Override

@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MealControllerTest extends ApiTestBase {
+class MealControllerTest extends ApiTestBase {
 
     @LocalServerPort
     private int port;

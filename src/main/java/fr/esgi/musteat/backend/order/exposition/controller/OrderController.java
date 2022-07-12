@@ -1,5 +1,7 @@
 package fr.esgi.musteat.backend.order.exposition.controller;
 
+import fr.esgi.musteat.backend.location.domain.Location;
+import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
 import fr.esgi.musteat.backend.meal.domain.Meal;
 import fr.esgi.musteat.backend.meal.infrastructure.service.MealService;
 import fr.esgi.musteat.backend.mealordered.domain.MealOrdered;
@@ -10,6 +12,7 @@ import fr.esgi.musteat.backend.order.exposition.dto.OrderDTO;
 import fr.esgi.musteat.backend.order.infrastructure.service.OrderService;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import fr.esgi.musteat.backend.restaurant.infrastructure.service.RestaurantService;
+import fr.esgi.musteat.backend.security.JWTService;
 import fr.esgi.musteat.backend.user.domain.User;
 import fr.esgi.musteat.backend.user.infrastructure.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -38,12 +41,15 @@ public class OrderController {
 
     private final RestaurantService restaurantService;
 
-    public OrderController(MealService mealService, MealOrderedService mealOrderedService, OrderService orderService, UserService userService, RestaurantService restaurantService) {
+    private final LocationService locationService;
+
+    public OrderController(MealService mealService, MealOrderedService mealOrderedService, OrderService orderService, UserService userService, RestaurantService restaurantService, LocationService locationService) {
         this.mealService = mealService;
         this.mealOrderedService = mealOrderedService;
         this.orderService = orderService;
         this.userService = userService;
         this.restaurantService = restaurantService;
+        this.locationService = locationService;
     }
 
     @GetMapping(value = "/orders")
@@ -53,7 +59,8 @@ public class OrderController {
     }
 
     @GetMapping(value = "/order/{id}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable @Valid Long id) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable @Valid Long id, @RequestHeader("Authorization") String authorizationHeader) {
+        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
         Order order = orderService.get(id);
 
         if (order == null) {
@@ -61,11 +68,11 @@ public class OrderController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(OrderDTO.from(order));
+                .body(OrderDTO.from(order, locationService.getTimeBetweenTwoLocations(userLocation, order.getRestaurant().getLocation())));
     }
 
     @PostMapping(value = "/order")
-    public ResponseEntity<String> createOrder(@RequestBody @Valid CreateOrderDTO createOrderDTO) {
+    public ResponseEntity<String> createOrder(@RequestBody @Valid CreateOrderDTO createOrderDTO, @RequestHeader("Authorization") String authorizationHeader) {
         List<Meal> orderedMeals = new ArrayList<>();
         User user = userService.get(createOrderDTO.userId);
 
@@ -92,11 +99,11 @@ public class OrderController {
         Order order = Order.from(createOrderDTO, user, restaurant);
         orderService.create(order);
         orderedMeals.forEach(orderedMeal -> mealOrderedService.create(MealOrdered.from(orderedMeal, order)));
-        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri()).build();
+        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
     }
 
     @PutMapping(value = "/order/{id}")
-    public ResponseEntity<String> updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO) {
+    public ResponseEntity<String> updateOrder(@PathVariable @Valid Long id, @RequestBody @Valid CreateOrderDTO createOrderDTO, @RequestHeader("Authorization") String authorizationHeader) {
         Order order = orderService.get(id);
 
         if (order == null) {
@@ -104,7 +111,7 @@ public class OrderController {
         }
 
         orderService.update(Order.update(order, createOrderDTO));
-        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId())).toUri()).build();
+        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
     }
 
     @DeleteMapping(value = "/order/{id}")

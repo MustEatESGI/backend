@@ -57,7 +57,7 @@ public class SearchControllerTest extends ApiTestBase {
                 .getList("", MealSearchedDTO.class);
 
         assertThat(meals).isNotEmpty();
-        assertThat(meals.size()).isEqualTo(1);
+        assertThat(meals).hasSize(1);
         assertThat(meals.get(0).name).isEqualTo(mealName);
     }
 }
