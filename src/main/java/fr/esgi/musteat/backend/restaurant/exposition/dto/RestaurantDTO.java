@@ -1,5 +1,6 @@
 package fr.esgi.musteat.backend.restaurant.exposition.dto;
 
+import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 
@@ -17,17 +18,24 @@ public class RestaurantDTO {
     @NotNull
     public LocationDTO location;
     @NotNull
+    public Long distance;
+    @NotNull
     public String imageUrl;
 
-    public RestaurantDTO(Long id, String name, LocationDTO location) {
+    public RestaurantDTO(Long id, String name, LocationDTO location, Long distance) {
         this.id = id;
         this.name = name;
         this.location = location;
+        this.distance = distance;
         this.imageUrl = "http://source.unsplash.com/random?" + name;
     }
 
+    public static RestaurantDTO from(Restaurant restaurant, Location userLocation) {
+        return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()), restaurant.getLocation().getDistance(userLocation));
+    }
+
     public static RestaurantDTO from(Restaurant restaurant) {
-        return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()));
+        return new RestaurantDTO(restaurant.getId(), restaurant.getName(), LocationDTO.from(restaurant.getLocation()), 0L);
     }
 
     @Override
@@ -36,6 +44,7 @@ public class RestaurantDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", location=" + location +
+                ", distance=" + distance +
                 '}';
     }
 

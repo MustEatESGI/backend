@@ -136,7 +136,7 @@ public class FixturesController {
     }
 
     public void addUserFixture() {
-        User user = new User("fixtureUser", "password", getLocationFixture());
+        User user = new User("fixtureUser", "Password1", getLocationFixture());
         this.userService.create(user);
         this.userFixture = user;
     }

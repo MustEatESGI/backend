@@ -1,4 +1,4 @@
-package fr.esgi.musteat.backend.restaurant.controller;
+package fr.esgi.musteat.backend.restaurant.exposition.controller;
 
 import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RestaurantControllerTest extends ApiTestBase {
+class RestaurantControllerTest extends ApiTestBase {
 
     @LocalServerPort
     private int port;

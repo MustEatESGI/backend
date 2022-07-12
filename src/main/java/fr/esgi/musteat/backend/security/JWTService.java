@@ -4,7 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class JWTService {
-    public static String ExtractSubjectFromBearerToken (String token) {
+
+    private JWTService() {
+    }
+
+    public static String extractSubjectFromBearerToken(String token) {
         DecodedJWT jwt = JWT.decode(token.substring("Bearer ".length()));
         return jwt.getSubject();
     }

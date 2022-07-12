@@ -37,7 +37,7 @@ public class SearchController {
     @GetMapping("/search/{mealName}/{sort}")
     public ResponseEntity<List<MealSearchedDTO>> searchByName(@PathVariable @Valid String mealName, @PathVariable @Valid String sort, HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        Location userLocation = userService.findByUsername(JWTService.ExtractSubjectFromBearerToken(authorizationHeader)).getLocation();
+        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
         List<Meal> meals = sortMeals(mealService.findByName(mealName), SortType.fromString(sort), userLocation);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(meals.stream().map(meal -> MealSearchedDTO.from(meal, userLocation)).collect(Collectors.toList()));
@@ -45,11 +45,11 @@ public class SearchController {
     
     private List<Meal> sortMeals(List<Meal> meals, SortType sort, Location userLocation) {
         switch (sort) {
-            case Price:
+            case PRICE:
                 return meals.stream().sorted(Comparator.comparing(Meal::getPrice)).collect(Collectors.toList());
-            case Distance:
+            case DISTANCE:
                 return meals.stream().sorted(Comparator.comparing(meal -> meal.getDistance(userLocation))).collect(Collectors.toList());
-            case Ratio:
+            case RATIO:
                 return meals.stream().sorted(Comparator.comparing(Meal::getPrice).thenComparing(meal -> meal.getDistance(userLocation))).collect(Collectors.toList());
             default:
                 return meals;
