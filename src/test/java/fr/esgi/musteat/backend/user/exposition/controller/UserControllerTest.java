@@ -177,6 +177,25 @@ class UserControllerTest extends ApiTestBase {
 
     @Test
     @Order(7)
+    void should_not_update_user_with_invalid_id() {
+        var updateUserDTO = new CreateUserDTO();
+        updateUserDTO.username = "New Name";
+        updateUserDTO.password = this.fixturesController.getUserFixture().getPassword();
+        updateUserDTO.location = new CreateLocationDTO();
+        updateUserDTO.location.address = "242 rue du faubourg Saint-Antoine, 75012 Paris";
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(updateUserDTO)
+                .when()
+                .put("/user/" + -1)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(8)
     void should_update_user_name() {
         var updateUserDTO = new CreateUserDTO();
         updateUserDTO.username = "New Name";
@@ -212,7 +231,7 @@ class UserControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void should_not_update_user_name_when_invalid() {
         var updateUserDTO = new CreateUserDTO();
         updateUserDTO.username = null;
@@ -231,7 +250,7 @@ class UserControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void should_update_user_location() {
         var updateUserDTO = new CreateUserDTO();
         updateUserDTO.username = this.fixturesController.getUserFixture().getName();
@@ -268,7 +287,7 @@ class UserControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     void should_not_update_user_location_when_invalid() {
         var updateUserDTO = new CreateUserDTO();
         updateUserDTO.username = this.fixturesController.getUserFixture().getName();
@@ -286,7 +305,7 @@ class UserControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     void should_delete_user() {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)

@@ -85,6 +85,24 @@ class MealControllerTest extends ApiTestBase {
 
     @Test
     @Order(2)
+    void should_not_create_meal_with_invalid_restaurant() {
+        var createMealDTO = new CreateMealDTO();
+        createMealDTO.name = "testMeal";
+        createMealDTO.price = 10L;
+        createMealDTO.restaurantId = -1L;
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(createMealDTO)
+                .when()
+                .post("/meal")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(3)
     void should_not_create_meal_with_invalid_name() {
         var createMealDTO = new CreateMealDTO();
         createMealDTO.name = null;
@@ -101,7 +119,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void should_not_create_meal_with_invalid_price() {
         var createMealDTO = new CreateMealDTO();
         createMealDTO.name = "testMeal";
@@ -118,7 +136,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void should_not_create_meal_with_invalid_restaurant_id() {
         var createMealDTO = new CreateMealDTO();
         createMealDTO.name = "testMeal";
@@ -135,7 +153,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void should_retrieve_bootstrapped_meals() {
         var mealDTOs = given()
                 .header("Authorization", "Bearer " + this.jwt)
@@ -150,7 +168,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void should_retrieve_single_meal() {
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
@@ -165,7 +183,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void should_update_meal_name() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.name = "newMealName";
@@ -197,7 +215,38 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
+    void should_not_update_meal_with_invalid_restaurant() {
+        var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
+        updateMealDTO.restaurantId = -1L;
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(updateMealDTO)
+                .when()
+                .put("/meal/" + this.fixturesController.getMealFixture().getId())
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(10)
+    void should_not_update_meal_with_invalid_id() {
+        var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(updateMealDTO)
+                .when()
+                .put("/meal/" + -1)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(11)
     void should_not_update_meal_name_when_invalid() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.name = null;
@@ -213,7 +262,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(9)
+    @Order(12)
     void should_update_meal_price() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.price = 20L;
@@ -244,7 +293,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(10)
+    @Order(13)
     void should_not_update_meal_price_when_invalid() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.price = null;
@@ -260,7 +309,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(11)
+    @Order(14)
     void should_update_meal_restaurant() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         this.fixturesController.addRestaurantFixtures();
@@ -292,7 +341,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(12)
+    @Order(15)
     void should_not_update_meal_restaurant_id_when_invalid() {
         var updateMealDTO = MealDetailsDTO.from(this.fixturesController.getMealFixture());
         updateMealDTO.restaurantId = null;
@@ -308,7 +357,7 @@ class MealControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(13)
+    @Order(16)
     void should_delete_meal() {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)

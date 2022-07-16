@@ -110,6 +110,26 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
         }
 
+        User user = userService.get(createOrderDTO.userId);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        Restaurant restaurant = restaurantService.get(createOrderDTO.restaurantId);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+
+        for (Long mealId : createOrderDTO.mealsId) {
+            Meal meal = mealService.get(mealId);
+
+            if (meal == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meal not found");
+            }
+        }
+
         orderService.update(Order.update(order, createOrderDTO));
         return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
     }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +111,7 @@ public class RestaurantController {
         Map<Restaurant, Long> restaurants = new HashMap<>();
 
         orderService.getAll().stream()
-                .filter(order -> order.getOrderDate().isAfter(order.getOrderDate().minusDays(7)))
+                .filter(order -> order.getOrderDate().isAfter(LocalDateTime.now().minusDays(7)))
                 .forEach(order -> {
                     if (restaurants.containsKey(order.getRestaurant())) {
                         restaurants.put(order.getRestaurant(), restaurants.get(order.getRestaurant()) + 1);
@@ -124,7 +125,9 @@ public class RestaurantController {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
+        List<RestaurantDTO> restaurantDTOs = sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
+                .body(restaurantDTOs);
     }
 }
