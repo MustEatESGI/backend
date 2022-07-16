@@ -6,12 +6,15 @@ import fr.esgi.musteat.backend.location.domain.Location;
 import fr.esgi.musteat.backend.location.domain.LocationRepository;
 import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @org.springframework.stereotype.Service
 public class LocationService extends Service<LocationRepository, Location, Long> {
@@ -31,9 +34,9 @@ public class LocationService extends Service<LocationRepository, Location, Long>
 
         RestTemplate restTemplate = new RestTemplate();
         // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
-        LinkedHashMap<String, Object> coordinates = (LinkedHashMap<String, Object>) ((ArrayList) restTemplate.getForObject(uri, JSONObject.class).get("data")).get(0);
+        JSONObject coordinates = new JSONObject(restTemplate.getForObject(uri, String.class)).getJSONArray("data").getJSONObject(0);
 
-        return new AddressCodingDTO(Double.parseDouble(coordinates.get("latitude").toString()), Double.parseDouble(coordinates.get("longitude").toString()));
+        return new AddressCodingDTO(coordinates.getDouble("latitude"), coordinates.getDouble("longitude"));
     }
 
     public Long getTimeBetweenTwoLocations(Location firstLocation, Location secondLocation) {
@@ -43,14 +46,8 @@ public class LocationService extends Service<LocationRepository, Location, Long>
 
         RestTemplate restTemplate = new RestTemplate();
         // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
+        JSONObject jsonObject = new JSONObject(restTemplate.getForObject(uri, String.class));
 
-        // TODO : Améliorer le parsing (c'est immonde)
-        ArrayList jsonObject = (ArrayList) restTemplate.getForObject(uri, JSONObject.class).get("rows");
-        LinkedHashMap<String, Object> jsonObject2 = (LinkedHashMap<String, Object>) jsonObject.get(0);
-        ArrayList<Object> jsonObject3 = (ArrayList<Object>) jsonObject2.get("elements");
-        LinkedHashMap<String, Object> jsonObject4 = (LinkedHashMap<String, Object>) jsonObject3.get(0);
-        LinkedHashMap<String, Object> jsonObject5 = (LinkedHashMap<String, Object>) jsonObject4.get("duration");
-
-        return Math.round(Double.parseDouble(jsonObject5.get("value").toString()) / 60);
+        return jsonObject.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getLong("value");
     }
 }
