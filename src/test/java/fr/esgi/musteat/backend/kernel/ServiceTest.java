@@ -59,7 +59,7 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
     void should_update_value() {
         repository.add(value);
         service.update(updatedValue);
-        assertThat(repository.get(value.getId()).get()).isEqualTo(updatedValue);
+        assertThat(repository.get(value.getId()).orElse(null)).isEqualTo(updatedValue);
     }
 
     @Test
