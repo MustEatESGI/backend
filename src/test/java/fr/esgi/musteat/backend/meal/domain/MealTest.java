@@ -1,11 +1,9 @@
 package fr.esgi.musteat.backend.meal.domain;
 
 import fr.esgi.musteat.backend.kernel.EntityTest;
-import fr.esgi.musteat.backend.location.domain.Location;
-import fr.esgi.musteat.backend.restaurant.domain.Restaurant;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MealTest extends EntityTest<Meal> {
 

@@ -19,7 +19,7 @@ public class OrderServiceTest extends ServiceTest<OrderRepository, Order, Long> 
         super(
                 new Order(0L, LocalDateTime.MIN,
                         new User("name", "Password1",
-                            new Location(10.0, 10.0)),
+                                new Location(10.0, 10.0)),
                         new Restaurant("restaurant",
                                 new Location(10.0, 10.0))),
                 new Order(0L, LocalDateTime.now(),

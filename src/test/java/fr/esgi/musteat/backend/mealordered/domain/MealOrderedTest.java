@@ -3,7 +3,7 @@ package fr.esgi.musteat.backend.mealordered.domain;
 import fr.esgi.musteat.backend.kernel.EntityTest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MealOrderedTest extends EntityTest<MealOrdered> {
 

@@ -77,7 +77,7 @@ class UserControllerTest extends ApiTestBase {
 
         var userDTO = given()
                 .headers("Authorization", "Bearer " + user_token)
-        .when()
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -150,12 +150,13 @@ class UserControllerTest extends ApiTestBase {
     void should_retrieve_bootstrapped_users() {
         var userDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/users")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
-                .body().jsonPath().getObject(".", new TypeRef<List<UserDTO>>() {});
+                .body().jsonPath().getObject(".", new TypeRef<List<UserDTO>>() {
+                });
 
         assertThat(userDTOs).hasSize(2);
     }
@@ -165,9 +166,9 @@ class UserControllerTest extends ApiTestBase {
     void should_retrieve_single_user() {
         var userDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/user/" + this.fixturesController.getUserFixture().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", UserDTO.class);
@@ -218,7 +219,7 @@ class UserControllerTest extends ApiTestBase {
 
         var userDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -273,7 +274,7 @@ class UserControllerTest extends ApiTestBase {
 
         var userDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -316,7 +317,7 @@ class UserControllerTest extends ApiTestBase {
 
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/user/" + this.fixturesController.getUserFixture().getId())
                 .then()
                 .statusCode(404);

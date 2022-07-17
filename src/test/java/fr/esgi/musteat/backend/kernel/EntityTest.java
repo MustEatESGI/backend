@@ -2,7 +2,7 @@ package fr.esgi.musteat.backend.kernel;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class EntityTest<T> {
 

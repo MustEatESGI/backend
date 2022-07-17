@@ -179,12 +179,13 @@ class OrderControllerTest extends ApiTestBase {
     void should_retrieve_bootstrapped_orders() {
         var orderDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/orders")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
-                .body().jsonPath().getObject(".", new TypeRef<List<OrderDTO>>() {});
+                .body().jsonPath().getObject(".", new TypeRef<List<OrderDTO>>() {
+                });
 
         assertThat(orderDTOs).hasSize(1);
     }
@@ -194,9 +195,9 @@ class OrderControllerTest extends ApiTestBase {
     void should_retrieve_single_order() {
         var orderDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/order/" + this.fixturesController.getOrderFixture().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", OrderDTO.class);
@@ -218,7 +219,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(10)
     void should_update_order_user() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
@@ -227,7 +228,7 @@ class OrderControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
-        .when()
+                .when()
                 .put("/order/" + this.fixturesController.getOrderFixture().getId())
                 .then()
                 .statusCode(201)
@@ -238,9 +239,9 @@ class OrderControllerTest extends ApiTestBase {
 
         var orderDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", OrderDTO.class);
@@ -252,7 +253,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(11)
     void should_not_update_order_with_unknown_id() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
@@ -270,7 +271,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(12)
     void should_not_update_order_with_unknown_user() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = -1L;
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
@@ -288,7 +289,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(13)
     void should_not_update_order_user_when_invalid() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = null;
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
 
@@ -296,7 +297,7 @@ class OrderControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
-        .when()
+                .when()
                 .put("/order/" + this.fixturesController.getOrderFixture().getId())
                 .then()
                 .statusCode(400);
@@ -306,7 +307,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(14)
     void should_update_order_restaurant() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getOrderFixture().getUser().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
@@ -315,7 +316,7 @@ class OrderControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
-        .when()
+                .when()
                 .put("/order/" + this.fixturesController.getOrderFixture().getId())
                 .then()
                 .statusCode(201)
@@ -340,7 +341,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(15)
     void should_not_update_order_with_unknown_restaurant() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = -1L;
         createOrderDTO.mealsId = List.of(this.fixturesController.getMealFixture().getId());
@@ -358,7 +359,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(16)
     void should_not_update_order_restaurant_when_invalid() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getOrderFixture().getUser().getId();
         createOrderDTO.restaurantId = null;
 
@@ -366,7 +367,7 @@ class OrderControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createOrderDTO)
-        .when()
+                .when()
                 .put("/order/" + this.fixturesController.getOrderFixture().getId())
                 .then()
                 .statusCode(400);
@@ -375,7 +376,7 @@ class OrderControllerTest extends ApiTestBase {
     @Test
     @Order(17)
     void should_not_update_order_with_unknown_meal() {
-        var createOrderDTO = new  CreateOrderDTO();
+        var createOrderDTO = new CreateOrderDTO();
         createOrderDTO.userId = this.fixturesController.getUserFixture().getId();
         createOrderDTO.restaurantId = this.fixturesController.getOrderFixture().getRestaurant().getId();
         createOrderDTO.mealsId = List.of(-1L);

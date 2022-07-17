@@ -58,9 +58,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -69,9 +69,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -93,9 +93,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(404);
     }
 
@@ -111,9 +111,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -129,9 +129,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -147,9 +147,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -158,9 +158,9 @@ class MealOrderedControllerTest extends ApiTestBase {
     void should_retrieve_bootstrapped_ordered_meals() {
         var mealOrderedDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getList(".", MealOrderedDTO.class);
@@ -173,9 +173,9 @@ class MealOrderedControllerTest extends ApiTestBase {
     void should_retrieve_single_ordered_meal() {
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -195,9 +195,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -206,9 +206,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -262,9 +262,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -280,9 +280,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -291,9 +291,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -311,9 +311,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -322,7 +322,7 @@ class MealOrderedControllerTest extends ApiTestBase {
     void should_update_meal_ordered_order() {
         var updateMealOrderedDTO = new CreateMealOrderedDTO();
         this.fixturesController.addOrderFixture();
-        updateMealOrderedDTO.name = this.fixturesController.getMealOrderedFixture().getName()  ;
+        updateMealOrderedDTO.name = this.fixturesController.getMealOrderedFixture().getName();
         updateMealOrderedDTO.price = this.fixturesController.getMealOrderedFixture().getPrice();
         updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
 
@@ -330,20 +330,20 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO =given()
+        var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -361,9 +361,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -373,16 +373,16 @@ class MealOrderedControllerTest extends ApiTestBase {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
-        .when()
+                .when()
                 .delete("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(200);
 
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(404);
     }
 }

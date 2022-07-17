@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class BackendConfigurationTest {
 
     @Bean
-    public FixturesController  getFixturesController(
+    public FixturesController getFixturesController(
             LocationService locationService,
             MealService mealService,
             MealOrderedService mealOrderedService,

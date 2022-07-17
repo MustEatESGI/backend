@@ -42,7 +42,7 @@ public class SearchController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(meals.stream().map(meal -> MealSearchedDTO.from(meal, userLocation)).collect(Collectors.toList()));
     }
-    
+
     private List<Meal> sortMeals(List<Meal> meals, SortType sort, Location userLocation) {
         switch (sort) {
             case PRICE:

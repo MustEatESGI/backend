@@ -48,7 +48,7 @@ public class LocationController {
     }
 
     @PutMapping(value = "/location/{id}")
-    public ResponseEntity<URI> updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid  CreateLocationDTO createLocationDTO) {
+    public ResponseEntity<URI> updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid CreateLocationDTO createLocationDTO) {
         Location location = locationService.get(id);
         AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
         locationService.update(Location.update(location, addressCodingDTO));

@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserServiceTest extends ServiceTest<UserRepository, User, Long> {
 
-    private PasswordEncoder passwordEncoder = new PasswordEncoder() {
+    private final PasswordEncoder passwordEncoder = new PasswordEncoder() {
         @Override
         public String encode(CharSequence rawPassword) {
             return rawPassword.toString();

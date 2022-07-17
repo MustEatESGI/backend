@@ -49,7 +49,7 @@ public class SearchControllerTest extends ApiTestBase {
         String mealName = fixturesController.getMealFixture().getName();
         var meals = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-                .get("/search/"+mealName.toLowerCase()+"/price")
+                .get("/search/" + mealName.toLowerCase() + "/price")
                 .then()
                 .extract()
                 .body()

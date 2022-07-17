@@ -28,20 +28,20 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     }
 
     public User findByUsername(String username) {
-         return repository.getAll()
-                 .stream()
-                 .filter(user -> user.getName().equals(username))
-                 .findFirst()
-                 .orElseThrow();
+        return repository.getAll()
+                .stream()
+                .filter(user -> user.getName().equals(username))
+                .findFirst()
+                .orElseThrow();
 
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.findByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("User not found in the database");
-        }else {
+        } else {
             log.info(user.toString());
         }
 

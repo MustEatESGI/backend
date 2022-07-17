@@ -3,7 +3,7 @@ package fr.esgi.musteat.backend.location.domain;
 import fr.esgi.musteat.backend.kernel.EntityTest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LocationTest extends EntityTest<Location> {
 

@@ -59,9 +59,9 @@ class MealControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealDTO)
-        .when()
+                .when()
                 .post("/meal")
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -70,9 +70,9 @@ class MealControllerTest extends ApiTestBase {
 
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealDetailsDTO.class);
@@ -157,12 +157,13 @@ class MealControllerTest extends ApiTestBase {
     void should_retrieve_bootstrapped_meals() {
         var mealDTOs = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/meals")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
-                .body().jsonPath().getObject(".", new TypeRef<List<MealDetailsDTO>>() {});
+                .body().jsonPath().getObject(".", new TypeRef<List<MealDetailsDTO>>() {
+                });
 
         assertThat(mealDTOs).hasSize(1);
     }
@@ -172,9 +173,9 @@ class MealControllerTest extends ApiTestBase {
     void should_retrieve_single_meal() {
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/meal/" + this.fixturesController.getMealFixture().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealDetailsDTO.class);
@@ -193,9 +194,9 @@ class MealControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealDTO)
-        .when()
+                .when()
                 .put("/meal/" + this.fixturesController.getMealFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -204,9 +205,9 @@ class MealControllerTest extends ApiTestBase {
 
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealDetailsDTO.class);
@@ -282,9 +283,9 @@ class MealControllerTest extends ApiTestBase {
 
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealDetailsDTO.class);
@@ -330,9 +331,9 @@ class MealControllerTest extends ApiTestBase {
 
         var mealDTO = given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealDetailsDTO.class);
@@ -368,7 +369,7 @@ class MealControllerTest extends ApiTestBase {
 
         given()
                 .header("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/meal/" + this.fixturesController.getMealFixture().getId())
                 .then()
                 .statusCode(404);
