@@ -4,6 +4,7 @@ import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
 import fr.esgi.musteat.backend.search.exposition.dto.MealSearchedDTO;
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import org.junit.jupiter.api.*;
@@ -12,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.event.annotation.AfterTestClass;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,17 +51,19 @@ public class SearchControllerTest extends ApiTestBase {
     @Order(1)
     void should_get_meals() {
         String mealName = fixturesController.getMealFixture().getName();
-        var meals = given()
+        var mealsBody = given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .get("/search/" + mealName.toLowerCase() + "/price")
                 .then()
                 .extract()
                 .body()
-                .jsonPath()
-                .getList("", MealSearchedDTO.class);
+                .jsonPath();
+
+        var meals = mealsBody
+                .getObject("", new TypeRef<List<LinkedHashMap<String, Object>>>(){});
 
         assertThat(meals).isNotEmpty();
         assertThat(meals).hasSize(1);
-        assertThat(meals.get(0).name).isEqualTo(mealName);
+        assertThat(meals.get(0).get("name")).isEqualTo(mealName);
     }
 }

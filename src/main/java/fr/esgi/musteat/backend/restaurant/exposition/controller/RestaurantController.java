@@ -74,13 +74,17 @@ public class RestaurantController {
 
     @PostMapping(value = "/restaurant")
     public ResponseEntity<String> createRestaurant(@RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
-        Location location = Location.from(addressCodingDTO);
-        locationService.create(location);
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+            Location location = Location.from(addressCodingDTO);
+            locationService.create(location);
 
-        Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
-        restaurantService.create(restaurant);
-        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+            Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
+            restaurantService.create(restaurant);
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/restaurant/{id}")
@@ -91,16 +95,24 @@ public class RestaurantController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
         }
 
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
-        locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
-        restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
-        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+            locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
+            restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/restaurant/{id}")
     public ResponseEntity<String> deleteRestaurant(@PathVariable @Valid Long id) {
-        restaurantService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            restaurantService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping(value = "/restaurants/trending")
@@ -126,7 +138,6 @@ public class RestaurantController {
 
         List<RestaurantDTO> restaurantDTOs = sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(restaurantDTOs);
+        return ResponseEntity.status(HttpStatus.OK).body(restaurantDTOs);
     }
 }

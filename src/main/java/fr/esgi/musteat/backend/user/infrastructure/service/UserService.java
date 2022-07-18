@@ -32,7 +32,7 @@ public class UserService extends Service<UserRepository, User, Long> implements 
                 .stream()
                 .filter(user -> user.getName().equals(username))
                 .findFirst()
-                .orElseThrow();
+                .orElse(null);
 
     }
 
@@ -54,6 +54,10 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     public void create(User entity) {
         if (entity.getId() != null && repository.get(entity.getId()).isPresent()) {
             throw new IllegalArgumentException(String.format("%s with id %s already exists", serviceName, entity.getId()));
+        }
+
+        if (findByUsername(entity.getName()) != null) {
+            throw new IllegalArgumentException(String.format("%s with name %s already exists", serviceName, entity.getName()));
         }
 
         User user = new User(entity.getId(), entity.getName(), passwordEncoder.encode(entity.getPassword()), entity.getLocation());

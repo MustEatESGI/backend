@@ -35,13 +35,13 @@ public abstract class Service<R extends Repository<V, K>, V extends Entity<K>, K
 
     public void update(V entity) {
         if (!repository.update(entity)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(String.format("%s with id %s not found", serviceName, entity.getId()));
         }
     }
 
     public void delete(K key) {
         if (!repository.remove(key)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(String.format("%s with id %s not found", serviceName, key));
         }
     }
 }
