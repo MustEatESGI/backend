@@ -27,10 +27,14 @@ public class LocationService extends Service<LocationRepository, Location, Long>
         final String uri = "http://api.positionstack.com/v1/forward?access_key=" + positionStackApiKey + "&query=" + createLocationDTO.address.replace(" ", "+") + "&country=fr";
 
         RestTemplate restTemplate = new RestTemplate();
-        // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
-        JSONObject coordinates = new JSONObject(restTemplate.getForObject(uri, String.class)).getJSONArray("data").getJSONObject(0);
+        try {
+            JSONObject coordinates = new JSONObject(restTemplate.getForObject(uri, String.class)).getJSONArray("data").getJSONObject(0);
 
-        return new AddressCodingDTO(coordinates.getDouble("latitude"), coordinates.getDouble("longitude"));
+            return new AddressCodingDTO(coordinates.getDouble("latitude"), coordinates.getDouble("longitude"));
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Address not found");
+        }
     }
 
     public Long getTimeBetweenTwoLocations(Location firstLocation, Location secondLocation) {
@@ -39,9 +43,13 @@ public class LocationService extends Service<LocationRepository, Location, Long>
                 "&destinations=" + secondLocation.getLatitude() + "," + secondLocation.getLongitude();
 
         RestTemplate restTemplate = new RestTemplate();
-        // TODO: Catcher l'erreur si l'utilisateur rentre une adresse invalide
-        JSONObject jsonObject = new JSONObject(restTemplate.getForObject(uri, String.class));
+        try {
+            JSONObject jsonObject = new JSONObject(restTemplate.getForObject(uri, String.class));
 
-        return jsonObject.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getLong("value");
+            return jsonObject.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("duration").getLong("value");
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Address not found");
+        }
     }
 }
