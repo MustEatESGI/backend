@@ -206,6 +206,22 @@ class LocationControllerTest extends ApiTestBase {
     @Test
     @Order(9)
     void should_delete_location() {
+        var createLocationDTO = new CreateLocationDTO();
+        createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
+
+        var location = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(createLocationDTO)
+                .when()
+                .post("/location")
+                .then()
+                .statusCode(201)
+                .extract()
+                .header("Location");
+
+        var locationId = location.substring(location.lastIndexOf("/") + 1);
+
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
@@ -217,7 +233,7 @@ class LocationControllerTest extends ApiTestBase {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .when()
-                .get("/mealordered/" + this.fixturesController.getLocationFixture().getId())
+                .get("/mealordered/" + locationId)
                 .then()
                 .statusCode(404);
     }
