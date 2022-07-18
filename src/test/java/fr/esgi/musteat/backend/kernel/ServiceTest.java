@@ -5,18 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K>, K> {
 
-    protected R repository;
-    protected Service<R, V, K> service;
-
     protected final V value;
     protected final V updatedValue;
+    protected R repository;
+    protected Service<R, V, K> service;
 
     public ServiceTest(V value, V updatedValue) {
         this.value = value;
@@ -30,6 +28,7 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
     }
 
     protected abstract R getRepository();
+
     protected abstract Service<R, V, K> getService(Repository repository);
 
     @Test
@@ -60,7 +59,7 @@ public abstract class ServiceTest<R extends Repository<V, K>, V extends Entity<K
     void should_update_value() {
         repository.add(value);
         service.update(updatedValue);
-        assertThat(repository.get(value.getId()).get()).isEqualTo(updatedValue);
+        assertThat(repository.get(value.getId()).orElse(null)).isEqualTo(updatedValue);
     }
 
     @Test

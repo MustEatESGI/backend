@@ -58,9 +58,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -69,9 +69,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -83,6 +83,24 @@ class MealOrderedControllerTest extends ApiTestBase {
 
     @Test
     @Order(2)
+    void should_not_create_meal_ordered_with_invalid_order() {
+        var createMealOrderedDTO = new CreateMealOrderedDTO();
+        createMealOrderedDTO.orderId = -1L;
+        createMealOrderedDTO.name = "testMealOrdered";
+        createMealOrderedDTO.price = 10L;
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(createMealOrderedDTO)
+                .when()
+                .post("/mealordered")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(3)
     void should_not_create_meal_ordered_with_invalid_name() {
         var createMealOrderedDTO = new CreateMealOrderedDTO();
         createMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
@@ -93,14 +111,14 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void should_not_create_meal_ordered_with_invalid_price() {
         var createMealOrderedDTO = new CreateMealOrderedDTO();
         createMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
@@ -111,14 +129,14 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void should_not_create_meal_ordered_with_invalid_order_id() {
         var createMealOrderedDTO = new CreateMealOrderedDTO();
         createMealOrderedDTO.orderId = null;
@@ -129,20 +147,20 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createMealOrderedDTO)
-        .when()
+                .when()
                 .post("/mealordered")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void should_retrieve_bootstrapped_ordered_meals() {
         var mealOrderedDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getList(".", MealOrderedDTO.class);
@@ -151,13 +169,13 @@ class MealOrderedControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void should_retrieve_single_ordered_meal() {
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -166,7 +184,7 @@ class MealOrderedControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void should_update_ordered_meal_name() {
         var updateMealOrderedDTO = new CreateMealOrderedDTO();
         updateMealOrderedDTO.name = "newMealOrderedName";
@@ -177,9 +195,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -188,9 +206,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -199,7 +217,43 @@ class MealOrderedControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
+    void should_not_update_ordered_meal_with_unknown_order_id() {
+        var updateMealOrderedDTO = new CreateMealOrderedDTO();
+        updateMealOrderedDTO.name = "newMealOrderedName";
+        updateMealOrderedDTO.price = this.fixturesController.getMealOrderedFixture().getPrice();
+        updateMealOrderedDTO.orderId = -1L;
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(updateMealOrderedDTO)
+                .when()
+                .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(10)
+    void should_not_update_ordered_meal_with_unknown_meal_ordered_id() {
+        var updateMealOrderedDTO = new CreateMealOrderedDTO();
+        updateMealOrderedDTO.name = "newMealOrderedName";
+        updateMealOrderedDTO.price = this.fixturesController.getMealOrderedFixture().getPrice();
+        updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(updateMealOrderedDTO)
+                .when()
+                .put("/mealordered/" + -1)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(11)
     void should_not_update_ordered_meal_name_when_invalid() {
         var updateMealOrderedDTO = MealOrderedDTO.from(this.fixturesController.getMealOrderedFixture());
         updateMealOrderedDTO.name = null;
@@ -208,14 +262,14 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(9)
+    @Order(12)
     void should_update_ordered_meal_price() {
         var updateMealOrderedDTO = new CreateMealOrderedDTO();
         updateMealOrderedDTO.name = this.fixturesController.getMealOrderedFixture().getName();
@@ -226,9 +280,9 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -237,9 +291,9 @@ class MealOrderedControllerTest extends ApiTestBase {
 
         var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -248,7 +302,7 @@ class MealOrderedControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(10)
+    @Order(13)
     void should_not_update_ordered_meal_price_when_invalid() {
         var updateMealOrderedDTO = MealOrderedDTO.from(this.fixturesController.getMealOrderedFixture());
         updateMealOrderedDTO.price = null;
@@ -257,18 +311,18 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(11)
+    @Order(14)
     void should_update_meal_ordered_order() {
         var updateMealOrderedDTO = new CreateMealOrderedDTO();
         this.fixturesController.addOrderFixture();
-        updateMealOrderedDTO.name = this.fixturesController.getMealOrderedFixture().getName()  ;
+        updateMealOrderedDTO.name = this.fixturesController.getMealOrderedFixture().getName();
         updateMealOrderedDTO.price = this.fixturesController.getMealOrderedFixture().getPrice();
         updateMealOrderedDTO.orderId = this.fixturesController.getOrderFixture().getId();
 
@@ -276,20 +330,20 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
 
         assertThat(location).isNotEmpty();
 
-        var mealOrderedDTO =given()
+        var mealOrderedDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", MealOrderedDTO.class);
@@ -298,7 +352,7 @@ class MealOrderedControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(12)
+    @Order(15)
     void should_not_update_meal_ordered_order_when_invalid() {
         var updateMealOrderedDTO = MealOrderedDTO.from(this.fixturesController.getMealOrderedFixture());
         updateMealOrderedDTO.orderDTO = null;
@@ -307,28 +361,28 @@ class MealOrderedControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(updateMealOrderedDTO)
-        .when()
+                .when()
                 .put("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
-    @Order(13)
+    @Order(16)
     void should_delete_meal_ordered() {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
-        .when()
+                .when()
                 .delete("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(200);
 
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/mealordered/" + this.fixturesController.getMealOrderedFixture().getId())
-        .then()
+                .then()
                 .statusCode(404);
     }
 }

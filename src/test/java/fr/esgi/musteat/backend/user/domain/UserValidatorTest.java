@@ -86,4 +86,10 @@ class UserValidatorTest {
         User user = new User(name, "abcdefgh1", location);
         assertThatThrownBy(() -> userValidator.validate(user)).isInstanceOf(IllegalArgumentException.class).hasMessage("User password must contain at least one uppercase letter");
     }
+
+    @Test
+    void should_be_invalid_when_location_is_null() {
+        User user = new User(name, password, null);
+        assertThatThrownBy(() -> userValidator.validate(user)).isInstanceOf(IllegalArgumentException.class).hasMessage("User location is null");
+    }
 }

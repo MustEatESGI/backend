@@ -25,8 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${jwt_secret_key:}")
     private String secretKey;
 
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -44,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/**").hasAnyAuthority("AUTHENTICATED");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasAnyAuthority("AUTHENTICATED");
         http.authorizeRequests().antMatchers("/login/**", "/users/token/refresh/**").permitAll();
-            http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), secretKey));
         http.addFilterBefore(new CustomAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
     }

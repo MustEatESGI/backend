@@ -96,10 +96,14 @@ public class OrderController {
             orderedMeals.add(meal);
         }
 
-        Order order = Order.from(createOrderDTO, user, restaurant);
-        orderService.create(order);
-        orderedMeals.forEach(orderedMeal -> mealOrderedService.create(MealOrdered.from(orderedMeal, order)));
-        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+        try {
+            Order order = Order.from(createOrderDTO, user, restaurant);
+            orderService.create(order);
+            orderedMeals.forEach(orderedMeal -> mealOrderedService.create(MealOrdered.from(orderedMeal, order)));
+            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/order/{id}")
@@ -110,13 +114,41 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
         }
 
-        orderService.update(Order.update(order, createOrderDTO));
-        return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+        User user = userService.get(createOrderDTO.userId);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        Restaurant restaurant = restaurantService.get(createOrderDTO.restaurantId);
+
+        if (restaurant == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+        }
+
+        for (Long mealId : createOrderDTO.mealsId) {
+            Meal meal = mealService.get(mealId);
+
+            if (meal == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meal not found");
+            }
+        }
+
+        try {
+            orderService.update(Order.update(order, createOrderDTO));
+            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/order/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable @Valid Long id) {
-        orderService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            orderService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

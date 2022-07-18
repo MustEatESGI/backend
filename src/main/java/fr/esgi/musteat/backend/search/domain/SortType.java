@@ -12,7 +12,7 @@ public enum SortType {
     }
 
     public static SortType fromString(String text) {
-        if(text.equals("")){
+        if (text.equals("")) {
             return SortType.RATIO;
         }
         for (SortType sortType : SortType.values()) {
