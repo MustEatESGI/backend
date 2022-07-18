@@ -226,7 +226,7 @@ class LocationControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .when()
-                .delete("/location/" + this.fixturesController.getLocationFixture().getId())
+                .delete("/location/" + locationId)
                 .then()
                 .statusCode(200);
 
