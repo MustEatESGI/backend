@@ -51,17 +51,14 @@ public class SearchControllerTest extends ApiTestBase {
     @Order(1)
     void should_get_meals() {
         String mealName = fixturesController.getMealFixture().getName();
-        var mealsBody = given()
+
+        var meals = given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .get("/search/" + mealName.toLowerCase() + "/price")
                 .then()
                 .extract()
                 .body()
-                .jsonPath();
-
-        System.out.println("mealsBody: " + mealsBody.getJsonObject(""));
-
-        var meals = mealsBody
+                .jsonPath()
                 .getObject("", new TypeRef<List<LinkedHashMap<String, Object>>>(){});
 
         assertThat(meals).isNotEmpty();

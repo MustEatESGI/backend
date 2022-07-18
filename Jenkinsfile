@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         writeFile file: 'application.properties', text: readFile(FILE)
                         def mvn = tool 'maven-3.8.4';
                         withSonarQubeEnv() {
@@ -37,7 +37,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         writeFile file: 'application.properties', text: readFile(FILE)
                         def mvn = tool 'maven-3.8.4';
                         withSonarQubeEnv() {
@@ -53,7 +53,7 @@ pipeline {
         stage('Unit test') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         def mvn = tool 'maven-3.8.4';
                         sh "${mvn}/bin/mvn clean test -Dspring.config.location=${FILE}"
                     }
