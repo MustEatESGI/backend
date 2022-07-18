@@ -5,6 +5,7 @@ import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
+import fr.esgi.musteat.backend.meal.exposition.controller.MealController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,7 @@ public class LocationController {
         try {
             AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
             locationService.update(Location.update(location, addressCodingDTO));
-            return ResponseEntity.ok(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toString());
+            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
