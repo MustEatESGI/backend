@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,13 +74,17 @@ public class RestaurantController {
 
     @PostMapping(value = "/restaurant")
     public ResponseEntity<String> createRestaurant(@RequestBody @Valid CreateRestaurantDTO createRestaurantDTO) {
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
-        Location location = Location.from(addressCodingDTO);
-        locationService.create(location);
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+            Location location = Location.from(addressCodingDTO);
+            locationService.create(location);
 
-        Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
-        restaurantService.create(restaurant);
-        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+            Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
+            restaurantService.create(restaurant);
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/restaurant/{id}")
@@ -91,16 +95,24 @@ public class RestaurantController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
         }
 
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
-        locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
-        restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
-        return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
+            locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
+            restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/restaurant/{id}")
     public ResponseEntity<String> deleteRestaurant(@PathVariable @Valid Long id) {
-        restaurantService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            restaurantService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping(value = "/restaurants/trending")
@@ -110,7 +122,7 @@ public class RestaurantController {
         Map<Restaurant, Long> restaurants = new HashMap<>();
 
         orderService.getAll().stream()
-                .filter(order -> order.getOrderDate().isAfter(order.getOrderDate().minusDays(7)))
+                .filter(order -> order.getOrderDate().isAfter(LocalDateTime.now().minusDays(7)))
                 .forEach(order -> {
                     if (restaurants.containsKey(order.getRestaurant())) {
                         restaurants.put(order.getRestaurant(), restaurants.get(order.getRestaurant()) + 1);
@@ -124,7 +136,8 @@ public class RestaurantController {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList()));
+        List<RestaurantDTO> restaurantDTOs = sortedRestaurants.stream().limit(5).map(restaurant -> RestaurantDTO.from(restaurant, userLocation)).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(restaurantDTOs);
     }
 }

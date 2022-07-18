@@ -4,6 +4,7 @@ import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.CreateRestaurantDTO;
+import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDTO;
 import fr.esgi.musteat.backend.restaurant.exposition.dto.RestaurantDetailsDTO;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
@@ -62,9 +63,9 @@ class RestaurantControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createRestaurantDTO)
-        .when()
+                .when()
                 .post("/restaurant")
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -73,9 +74,9 @@ class RestaurantControllerTest extends ApiTestBase {
 
         var restaurantDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
@@ -126,12 +127,13 @@ class RestaurantControllerTest extends ApiTestBase {
     void should_retrieve_bootstrapped_restaurants() {
         var restaurantDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/restaurants")
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
-                .body().jsonPath().getObject(".", new TypeRef<List<RestaurantDetailsDTO>>() {});
+                .body().jsonPath().getObject(".", new TypeRef<List<RestaurantDetailsDTO>>() {
+                });
 
         assertThat(restaurantDTOs).hasSize(1);
     }
@@ -141,9 +143,9 @@ class RestaurantControllerTest extends ApiTestBase {
     void should_retrieve_single_restaurant() {
         var restaurantDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
@@ -153,6 +155,25 @@ class RestaurantControllerTest extends ApiTestBase {
 
     @Test
     @Order(6)
+    void should_retrieve_trending_restaurants() {
+        this.fixturesController.addOrderFixture();
+        var restaurantDTOs = given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .when()
+                .get("/restaurants/trending")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .jsonPath()
+                .getObject(".", new TypeRef<List<RestaurantDTO>>() {
+                });
+
+        assertThat(restaurantDTOs).hasSize(1);
+    }
+
+    @Test
+    @Order(7)
     void should_update_restaurant_name() {
         CreateRestaurantDTO createRestaurantDTO = new CreateRestaurantDTO();
         createRestaurantDTO.name = "newRestaurantName";
@@ -163,9 +184,9 @@ class RestaurantControllerTest extends ApiTestBase {
                 .headers("Authorization", "Bearer " + this.jwt)
                 .contentType(ContentType.JSON)
                 .body(createRestaurantDTO)
-        .when()
+                .when()
                 .put("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
-        .then()
+                .then()
                 .statusCode(201)
                 .extract()
                 .header("Location");
@@ -174,9 +195,9 @@ class RestaurantControllerTest extends ApiTestBase {
 
         var restaurantDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .body().jsonPath().getObject(".", RestaurantDetailsDTO.class);
@@ -185,7 +206,25 @@ class RestaurantControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
+    void should_not_update_restaurant_with_unknown_id() {
+        CreateRestaurantDTO createRestaurantDTO = new CreateRestaurantDTO();
+        createRestaurantDTO.name = "newRestaurantName";
+        createRestaurantDTO.location = new CreateLocationDTO();
+        createRestaurantDTO.location.address = "242 rue du faubourg Saint-Antoine, 75012 Paris";
+
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .contentType(ContentType.JSON)
+                .body(createRestaurantDTO)
+                .when()
+                .put("/restaurant/" + -1)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(9)
     void should_not_update_restaurant_name_when_invalid() {
         var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
         updateRestaurantDTO.name = null;
@@ -201,7 +240,7 @@ class RestaurantControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     void should_update_restaurant_location() {
         CreateRestaurantDTO createRestaurantDTO = new CreateRestaurantDTO();
         createRestaurantDTO.name = this.fixturesController.getRestaurantFixtures().getName();
@@ -223,7 +262,7 @@ class RestaurantControllerTest extends ApiTestBase {
 
         var restaurantDTO = given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get(location)
                 .then()
                 .statusCode(200)
@@ -236,7 +275,7 @@ class RestaurantControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     void should_not_update_restaurant_location_when_invalid() {
         var updateRestaurantDTO = RestaurantDetailsDTO.from(this.fixturesController.getRestaurantFixtures(), List.of());
         updateRestaurantDTO.location = null;
@@ -252,8 +291,9 @@ class RestaurantControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(10)
+    @Order(12)
     void should_delete_restaurant() {
+        this.fixturesController.addRestaurantFixtures();
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
                 .when()
@@ -263,7 +303,7 @@ class RestaurantControllerTest extends ApiTestBase {
 
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
-        .when()
+                .when()
                 .get("/restaurant/" + this.fixturesController.getRestaurantFixtures().getId())
                 .then()
                 .statusCode(404);

@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         writeFile file: 'application.properties', text: readFile(FILE)
                         def mvn = tool 'maven-3.8.4';
                         withSonarQubeEnv() {
@@ -37,7 +37,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         writeFile file: 'application.properties', text: readFile(FILE)
                         def mvn = tool 'maven-3.8.4';
                         withSonarQubeEnv() {
@@ -53,7 +53,7 @@ pipeline {
         stage('Unit test') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_TEST', variable: 'FILE')]) {
                         def mvn = tool 'maven-3.8.4';
                         sh "${mvn}/bin/mvn clean test -Dspring.config.location=${FILE}"
                     }
@@ -89,11 +89,12 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE'), file(credentialsId: 'ESGI_MUSTEAT_GCLOUD_KEY', variable: 'AUTH')]) {
+                    withCredentials([file(credentialsId: 'ESGI_MUSTEAT_APPLICATION_PROD', variable: 'FILE'), file(credentialsId: 'ESGI_MUSTEAT_GCLOUD_KEY', variable: 'AUTH'), usernamePassword(credentialsId: 'MUSTEAT_PG_PASSWORD', passwordVariable: 'PASSWORD')]) {
                         def docker = tool 'docker-agent';
                         writeFile file: 'application.properties', text: readFile(FILE)
                         sh "gcloud auth activate-service-account jenkins@tough-valve-353020.iam.gserviceaccount.com	--key-file=${AUTH}";
                         sh "gcloud auth configure-docker europe-west9-docker.pkg.dev";
+                        sh "docker run --rm postgres:latest sh -c \"PGPASSWORD=${PASSWORD} psql -h 34.155.189.206 -U musteat -c 'CREATE EXTENSION pg_trgm;CREATE EXTENSION fuzzystrmatch;'\""
                         sh "${docker}/bin/docker build --no-cache . -t europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest";
                         sh "${docker}/bin/docker push europe-west9-docker.pkg.dev/tough-valve-353020/musteat/backend:latest";
                     }

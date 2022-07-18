@@ -27,7 +27,7 @@ public class MealServiceTest extends ServiceTest<MealRepository, Meal, Long> {
                                 new Location(10.0, 10.0))),
                 new Meal(0L, "test", 15_00L,
                         new Restaurant("name",
-                            new Location(10.0, 10.0))));
+                                new Location(10.0, 10.0))));
     }
 
     @Override

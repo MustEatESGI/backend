@@ -51,32 +51,44 @@ public class UserController {
 
     @PostMapping(value = "/user")
     public ResponseEntity<String> createUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
-        Location location = Location.from(addressCodingDTO);
-        locationService.create(location);
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
+            Location location = Location.from(addressCodingDTO);
+            locationService.create(location);
 
-        User user = User.from(createUserDTO, location);
-        userService.create(user);
-        return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).body(user.getId().toString());
+            User user = User.from(createUserDTO, location);
+            userService.create(user);
+            return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).body(user.getId().toString());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/user/{id}")
     public ResponseEntity<String> updateUser(@PathVariable @Valid Long id, @RequestBody @Valid CreateUserDTO createUserDTO) {
         User user = userService.get(id);
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        locationService.update(Location.update(user.getLocation(), addressCodingDTO));
-        userService.update(User.update(user, createUserDTO, addressCodingDTO));
-        return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).build();
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
+            locationService.update(Location.update(user.getLocation(), addressCodingDTO));
+            userService.update(User.update(user, createUserDTO, addressCodingDTO));
+            return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable @Valid Long id) {
-        userService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            userService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

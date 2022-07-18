@@ -35,14 +35,18 @@ public class SearchController {
     }
 
     @GetMapping("/search/{mealName}/{sort}")
-    public ResponseEntity<List<MealSearchedDTO>> searchByName(@PathVariable @Valid String mealName, @PathVariable @Valid String sort, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> searchByName(@PathVariable @Valid String mealName, @PathVariable @Valid String sort, HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
-        List<Meal> meals = sortMeals(mealService.findByName(mealName), SortType.fromString(sort), userLocation);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(meals.stream().map(meal -> MealSearchedDTO.from(meal, userLocation)).collect(Collectors.toList()));
+        try {
+            Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
+            List<Meal> meals = sortMeals(mealService.findByName(mealName), SortType.fromString(sort), userLocation);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(meals.stream().map(meal -> MealSearchedDTO.from(meal, userLocation)).collect(Collectors.toList()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
-    
+
     private List<Meal> sortMeals(List<Meal> meals, SortType sort, Location userLocation) {
         switch (sort) {
             case PRICE:

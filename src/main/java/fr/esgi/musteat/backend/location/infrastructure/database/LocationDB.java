@@ -13,7 +13,7 @@ public class LocationDB {
     private Double latitude;
     private Double longitude;
 
-    public LocationDB(){
+    public LocationDB() {
     }
 
     private LocationDB(Long id, Double latitude, Double longitude) {

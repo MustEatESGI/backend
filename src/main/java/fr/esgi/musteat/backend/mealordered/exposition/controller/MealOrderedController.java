@@ -44,8 +44,7 @@ public class MealOrderedController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(MealOrderedDTO.from(mealOrdered));
+        return ResponseEntity.status(HttpStatus.OK).body(MealOrderedDTO.from(mealOrdered));
     }
 
     @PostMapping(value = "/mealordered")
@@ -56,9 +55,13 @@ public class MealOrderedController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
         }
 
-        MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
-        mealOrderedService.create(mealOrdered);
-        return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+        try {
+            MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
+            mealOrderedService.create(mealOrdered);
+            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/mealordered/{id}")
@@ -75,13 +78,21 @@ public class MealOrderedController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("MealOrdered not found");
         }
 
-        mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO, order));
-        return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+        try {
+            mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO, order));
+            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/mealordered/{id}")
     public ResponseEntity<String> deleteMealOrdered(@PathVariable @Valid Long id) {
-        mealOrderedService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            mealOrderedService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

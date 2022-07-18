@@ -28,20 +28,20 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     }
 
     public User findByUsername(String username) {
-         return repository.getAll()
-                 .stream()
-                 .filter(user -> user.getName().equals(username))
-                 .findFirst()
-                 .orElseThrow();
+        return repository.getAll()
+                .stream()
+                .filter(user -> user.getName().equals(username))
+                .findFirst()
+                .orElse(null);
 
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.findByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("User not found in the database");
-        }else {
+        } else {
             log.info(user.toString());
         }
 
@@ -54,6 +54,10 @@ public class UserService extends Service<UserRepository, User, Long> implements 
     public void create(User entity) {
         if (entity.getId() != null && repository.get(entity.getId()).isPresent()) {
             throw new IllegalArgumentException(String.format("%s with id %s already exists", serviceName, entity.getId()));
+        }
+
+        if (findByUsername(entity.getName()) != null) {
+            throw new IllegalArgumentException(String.format("%s with name %s already exists", serviceName, entity.getName()));
         }
 
         User user = new User(entity.getId(), entity.getName(), passwordEncoder.encode(entity.getPassword()), entity.getLocation());

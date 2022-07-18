@@ -35,29 +35,50 @@ public class LocationController {
 
     @GetMapping(value = "/location/{id}")
     public ResponseEntity<LocationDTO> getLocation(@PathVariable @Valid Long id) {
+        Location location = locationService.get(id);
+        if (location == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return ResponseEntity.status(HttpStatus.OK)
-                .body(LocationDTO.from(locationService.get(id)));
+                .body(LocationDTO.from(location));
     }
 
     @PostMapping(value = "/location")
     public ResponseEntity<String> createLocation(@RequestBody @Valid CreateLocationDTO createLocationDTO) {
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
-        Location location = Location.from(addressCodingDTO);
-        locationService.create(location);
-        return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).build();
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
+            Location location = Location.from(addressCodingDTO);
+            locationService.create(location);
+            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/location/{id}")
-    public ResponseEntity<URI> updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid  CreateLocationDTO createLocationDTO) {
+    public ResponseEntity<String> updateLocation(@PathVariable @Valid Long id, @RequestBody @Valid CreateLocationDTO createLocationDTO) {
         Location location = locationService.get(id);
-        AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
-        locationService.update(Location.update(location, addressCodingDTO));
-        return ResponseEntity.ok(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri());
+
+        if (location == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        try {
+            AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
+            locationService.update(Location.update(location, addressCodingDTO));
+            return ResponseEntity.ok(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toString());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/location/{id}")
     public ResponseEntity<String> deleteLocation(@PathVariable @Valid Long id) {
-        locationService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            locationService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

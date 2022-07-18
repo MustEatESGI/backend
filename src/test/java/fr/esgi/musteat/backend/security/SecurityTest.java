@@ -1,21 +1,16 @@
-package fr.esgi.musteat.backend.search.exposition.controller;
+package fr.esgi.musteat.backend.security;
 
-import fr.esgi.musteat.backend.ApiTestBase;
 import fr.esgi.musteat.backend.fixtures.exposition.controller.FixturesController;
-import fr.esgi.musteat.backend.search.exposition.dto.MealSearchedDTO;
 import io.restassured.RestAssured;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.event.annotation.AfterTestClass;
-
-import java.util.LinkedHashMap;
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,12 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SearchControllerTest extends ApiTestBase {
+public class SecurityTest {
+
+    private static String USERNAME;
+    private static String PASSWORD;
 
     @LocalServerPort
     private int port;
-
-    private String jwt;
 
     @Autowired
     private FixturesController fixturesController;
@@ -38,8 +34,6 @@ public class SearchControllerTest extends ApiTestBase {
     void setup() {
         RestAssured.port = port;
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-
-        jwt = this.getToken(fixturesController.getUserFixture().getName(), fixturesController.getUserFixture().getPassword());
     }
 
     @AfterTestClass
@@ -49,20 +43,16 @@ public class SearchControllerTest extends ApiTestBase {
 
     @Test
     @Order(1)
-    void should_get_meals() {
-        String mealName = fixturesController.getMealFixture().getName();
-
-        var meals = given()
-                .headers("Authorization", "Bearer " + this.jwt)
-                .get("/search/" + mealName.toLowerCase() + "/price")
+    void should_create_jwt() {
+        var token = given()
+                .contentType(ContentType.URLENC)
+                .param("username", fixturesController.getUserFixture().getName())
+                .param("password", fixturesController.getUserFixture().getPassword())
+                .post("/login")
                 .then()
-                .extract()
-                .body()
-                .jsonPath()
-                .getObject("", new TypeRef<List<LinkedHashMap<String, Object>>>(){});
+                .statusCode(200)
+                .extract().body().jsonPath().getString("access_token");
 
-        assertThat(meals).isNotEmpty();
-        assertThat(meals).hasSize(1);
-        assertThat(meals.get(0).get("name")).isEqualTo(mealName);
+        assertThat(token).isNotNull();
     }
 }

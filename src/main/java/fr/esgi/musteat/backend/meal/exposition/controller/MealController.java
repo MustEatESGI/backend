@@ -48,17 +48,16 @@ public class MealController {
 
     @GetMapping(value = "/meal/{id}")
     public ResponseEntity<MealDetailsDTO> getMeal(@PathVariable @Valid Long id, HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
-
         Meal meal = mealService.get(id);
 
         if (meal == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(MealDetailsDTO.from(meal, userLocation));
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        Location userLocation = userService.findByUsername(JWTService.extractSubjectFromBearerToken(authorizationHeader)).getLocation();
+
+        return ResponseEntity.status(HttpStatus.OK).body(MealDetailsDTO.from(meal, userLocation));
     }
 
     @PostMapping(value = "/meal")
@@ -69,9 +68,13 @@ public class MealController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
         }
 
-        Meal meal = Meal.from(createMealDTO, restaurant);
-        mealService.create(meal);
-        return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+        try {
+            Meal meal = Meal.from(createMealDTO, restaurant);
+            mealService.create(meal);
+            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/meal/{id}")
@@ -88,13 +91,21 @@ public class MealController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meal not found");
         }
 
-        mealService.update(Meal.update(meal, createMealDTO, restaurant));
-        return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+        try {
+            mealService.update(Meal.update(meal, createMealDTO, restaurant));
+            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/meal/{id}")
     public ResponseEntity<String> deleteMeal(@PathVariable @Valid Long id) {
-        mealService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            mealService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
