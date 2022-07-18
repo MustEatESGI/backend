@@ -59,6 +59,8 @@ public class SearchControllerTest extends ApiTestBase {
                 .body()
                 .jsonPath();
 
+        System.out.println("mealsBody: " + mealsBody.getJsonObject(""));
+
         var meals = mealsBody
                 .getObject("", new TypeRef<List<LinkedHashMap<String, Object>>>(){});
 
