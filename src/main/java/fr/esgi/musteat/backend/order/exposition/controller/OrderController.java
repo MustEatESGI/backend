@@ -100,7 +100,7 @@ public class OrderController {
             Order order = Order.from(createOrderDTO, user, restaurant);
             orderService.create(order);
             orderedMeals.forEach(orderedMeal -> mealOrderedService.create(MealOrdered.from(orderedMeal, order)));
-            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).body(order.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -136,7 +136,7 @@ public class OrderController {
 
         try {
             orderService.update(Order.update(order, createOrderDTO));
-            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(OrderController.class).getOrder(order.getId(), authorizationHeader)).toUri()).body(order.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
