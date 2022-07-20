@@ -71,7 +71,7 @@ public class MealController {
         try {
             Meal meal = Meal.from(createMealDTO, restaurant);
             mealService.create(meal);
-            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).body(restaurant.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -93,7 +93,7 @@ public class MealController {
 
         try {
             mealService.update(Meal.update(meal, createMealDTO, restaurant));
-            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(MealController.class).getMeal(meal.getId(), request)).toUri()).body(restaurant.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

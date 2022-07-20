@@ -76,7 +76,7 @@ public class UserController {
             AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createUserDTO.location);
             locationService.update(Location.update(user.getLocation(), addressCodingDTO));
             userService.update(User.update(user, createUserDTO, addressCodingDTO));
-            return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(UserController.class).getUserById(user.getId())).toUri()).body(user.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

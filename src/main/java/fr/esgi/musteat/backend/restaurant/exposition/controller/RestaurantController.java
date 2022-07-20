@@ -81,7 +81,7 @@ public class RestaurantController {
 
             Restaurant restaurant = Restaurant.from(createRestaurantDTO, location);
             restaurantService.create(restaurant);
-            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).body(restaurant.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -99,7 +99,7 @@ public class RestaurantController {
             AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createRestaurantDTO.location);
             locationService.update(Location.update(restaurant.getLocation(), addressCodingDTO));
             restaurantService.update(Restaurant.update(restaurant, createRestaurantDTO));
-            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(RestaurantController.class).getRestaurant(restaurant.getId())).toUri()).body(restaurant.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

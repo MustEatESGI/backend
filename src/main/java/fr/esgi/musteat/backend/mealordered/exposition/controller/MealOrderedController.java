@@ -58,7 +58,7 @@ public class MealOrderedController {
         try {
             MealOrdered mealOrdered = MealOrdered.from(createMealOrderedDTO, order);
             mealOrderedService.create(mealOrdered);
-            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).body(mealOrdered.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -80,7 +80,7 @@ public class MealOrderedController {
 
         try {
             mealOrderedService.update(MealOrdered.update(mealOrdered, createMealOrderedDTO, order));
-            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(MealOrderedController.class).getMealOrdered(mealOrdered.getId())).toUri()).body(mealOrdered.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
