@@ -36,12 +36,12 @@ public class LocationController {
 
     @GetMapping(value = "/location/{id}")
     public ResponseEntity<LocationDTO> getLocation(@PathVariable @Valid Long id) {
-        Location location = locationService.get(id);
-        if (location == null) {
+        try {
+            Location location = locationService.get(id);
+            return ResponseEntity.status(HttpStatus.OK).body(LocationDTO.from(location));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(LocationDTO.from(location));
     }
 
     @PostMapping(value = "/location")

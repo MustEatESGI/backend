@@ -63,6 +63,17 @@ class LocationControllerTest extends ApiTestBase {
 
     @Test
     @Order(2)
+    void should_be_not_found_when_retrieving_unknown_location() {
+        given()
+                .headers("Authorization", "Bearer " + this.jwt)
+                .when()
+                .get("/location/" + -1)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    @Order(3)
     void should_retrieve_locations() {
         var locationDTOs = given()
                 .headers("Authorization", "Bearer " + this.jwt)
@@ -77,7 +88,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void should_create_location() {
         var createLocationDTO = new CreateLocationDTO();
         createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
@@ -109,7 +120,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void should_not_create_location_when_the_address_is_wrong_or_missing() {
         var createLocationDTO = new CreateLocationDTO();
 
@@ -126,7 +137,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void should_update_location() {
         var createLocationDTO = new CreateLocationDTO();
         createLocationDTO.address = "243 Rue du Faubourg Saint-Antoine, 75012 Paris";
@@ -158,7 +169,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void should_not_update_location_when_the_address_is_wrong_or_missing() {
         var createLocationDTO = new CreateLocationDTO();
 
@@ -175,7 +186,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void should_not_update_location_when_the_location_id_does_not_exist() {
         var createLocationDTO = new CreateLocationDTO();
 
@@ -192,7 +203,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void should_not_delete_location_when_the_location_id_does_not_exist() {
         given()
                 .headers("Authorization", "Bearer " + this.jwt)
@@ -204,7 +215,7 @@ class LocationControllerTest extends ApiTestBase {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void should_delete_location() {
         var createLocationDTO = new CreateLocationDTO();
         createLocationDTO.address = "242 Rue du Faubourg Saint-Antoine, 75012 Paris";
