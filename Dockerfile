@@ -2,7 +2,7 @@ FROM maven:3.8.5-jdk-11 as builder
 ARG application-properties
 WORKDIR /data
 COPY . .
-RUN mvn clean package -Dspring.config.location=application.properties
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true -Dspring.config.location=application.properties
 
 FROM openjdk:11-slim
 EXPOSE 8080

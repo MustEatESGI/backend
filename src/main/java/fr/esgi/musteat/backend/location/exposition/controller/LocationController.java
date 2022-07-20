@@ -50,7 +50,7 @@ public class LocationController {
             AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
             Location location = Location.from(addressCodingDTO);
             locationService.create(location);
-            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).body(location.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -67,7 +67,7 @@ public class LocationController {
         try {
             AddressCodingDTO addressCodingDTO = locationService.getLocationFromAddress(createLocationDTO);
             locationService.update(Location.update(location, addressCodingDTO));
-            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).build();
+            return ResponseEntity.created(linkTo(methodOn(LocationController.class).getLocation(location.getId())).toUri()).body(location.getId().toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
