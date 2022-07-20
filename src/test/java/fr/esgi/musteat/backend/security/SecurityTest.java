@@ -55,4 +55,15 @@ public class SecurityTest {
 
         assertThat(token).isNotNull();
     }
+
+    @Test
+    @Order(2)
+    void should_return_forbidden() {
+        given()
+                .headers("Authorization", "Bearer notAJWT")
+                .contentType(ContentType.URLENC)
+                .get("/user")
+                .then()
+                .statusCode(403);
+    }
 }

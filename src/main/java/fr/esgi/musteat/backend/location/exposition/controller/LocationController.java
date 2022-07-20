@@ -5,6 +5,7 @@ import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
+import fr.esgi.musteat.backend.meal.exposition.controller.MealController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

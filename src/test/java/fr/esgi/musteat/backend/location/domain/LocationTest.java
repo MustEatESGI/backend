@@ -16,4 +16,11 @@ class LocationTest extends EntityTest<Location> {
         Location location = new Location(1L, 1.0, 1.0);
         assertEquals("Location{id=1, latitude=1.0, longitude=1.0}", location.toString());
     }
+
+    @Test
+    void test_get_distance() {
+        Location location = new Location(1L, 1.0, 1.0);
+        Location userLocation = new Location(2L, 10.0, -20.0);
+        assertEquals(2284.0, location.getDistance(userLocation));
+    }
 }
