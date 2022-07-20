@@ -5,6 +5,7 @@ import fr.esgi.musteat.backend.location.exposition.dto.AddressCodingDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.CreateLocationDTO;
 import fr.esgi.musteat.backend.location.exposition.dto.LocationDTO;
 import fr.esgi.musteat.backend.location.infrastructure.service.LocationService;
+import fr.esgi.musteat.backend.meal.exposition.controller.MealController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,12 +36,12 @@ public class LocationController {
 
     @GetMapping(value = "/location/{id}")
     public ResponseEntity<LocationDTO> getLocation(@PathVariable @Valid Long id) {
-        Location location = locationService.get(id);
-        if (location == null) {
+        try {
+            Location location = locationService.get(id);
+            return ResponseEntity.status(HttpStatus.OK).body(LocationDTO.from(location));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(LocationDTO.from(location));
     }
 
     @PostMapping(value = "/location")
