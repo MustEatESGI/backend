@@ -39,7 +39,16 @@ public class Location extends Entity<Long> {
     }
 
     public long getDistance(Location userLocation) {
-        return (long) (Math.sqrt(Math.pow(userLocation.getLatitude() - latitude, 2) + Math.pow(userLocation.getLongitude() - longitude, 2)) * 100);
+        final int earthRadius = 6371; // Radius of the earth
+        double latDistance = Math.toRadians(latitude - userLocation.getLatitude()) / 2;
+        double lonDistance = Math.toRadians(longitude - userLocation.getLongitude()) / 2;
+        double result = Math.sin(latDistance)
+                * Math.sin(latDistance)
+                + Math.cos(Math.toRadians(userLocation.getLatitude()))
+                * Math.cos(Math.toRadians(latitude))
+                * Math.sin(lonDistance)
+                * Math.sin(lonDistance);
+        return (long) (earthRadius * (2 * Math.atan2(Math.sqrt(result), Math.sqrt(1 - result))) * 1000);
     }
 
     @Override
