@@ -1,5 +1,6 @@
 package fr.esgi.musteat.backend.security;
 
+import fr.esgi.musteat.backend.user.infrastructure.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final UserService userService;
     @Value("${jwt_secret_key:}")
     private String secretKey;
 
@@ -44,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasAnyAuthority("AUTHENTICATED");
         http.authorizeRequests().antMatchers("/login/**", "/users/token/refresh/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), secretKey));
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), secretKey, userService));
         http.addFilterBefore(new CustomAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
     }
 
